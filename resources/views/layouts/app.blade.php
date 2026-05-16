@@ -42,12 +42,9 @@
     <!-- SideNavBar -->
     <aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-outline-variant/30 bg-surface-container-low hidden lg:flex flex-col py-8 z-50">
         <div class="px-6 mb-8 flex flex-col gap-2">
-            <div class="h-10 w-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-headline-sm text-headline-sm font-bold">
-                BT
-            </div>
+            
             <div>
                 <h2 class="font-headline-sm text-headline-sm font-bold text-primary">Barokah Tirta</h2>
-                <p class="font-body-md text-body-md text-on-surface-variant">Water Refill Mgmt</p>
             </div>
         </div>
         <nav class="flex-1 flex flex-col gap-1">
@@ -169,11 +166,28 @@
                 <span class="material-symbols-outlined text-primary cursor-pointer" @click="mobileMenuOpen = true">menu</span>
                 <span class="font-headline-sm text-headline-sm font-bold text-primary">Depot Barokah Tirta</span>
             </div>
-            <div class="hidden lg:flex items-center w-96 relative">
-                <span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
-                <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md text-on-surface transition-colors" placeholder="Cari pelanggan, transaksi..." type="text"/>
+            <div class="hidden lg:flex items-center w-96">
+                <form action="{{ route('pelanggan.index') }}" method="GET" class="w-full relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input name="search" value="{{ request('search') }}" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md text-on-surface transition-colors" placeholder="Cari pelanggan..." type="text"/>
+                </form>
             </div>
             <div class="flex items-center gap-4">
+                <!-- User Profile Summary -->
+                <div class="hidden sm:flex items-center gap-3 pr-4 border-r border-outline-variant/30">
+                    <div class="text-right">
+                        <p class="font-label-md text-label-md font-bold text-on-surface">{{ auth()->user()->name }}</p>
+                        <p class="font-label-sm text-label-sm text-on-surface-variant">Administrator</p>
+                    </div>
+                    @if(auth()->user()->foto)
+                        <img src="{{ asset('storage/' . auth()->user()->foto) }}" alt="Profile" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30">
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold">
+                            {{ substr(auth()->user()->name, 0, 1) }}
+                        </div>
+                    @endif
+                </div>
+
                 <!-- Notification Dropdown -->
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" 
@@ -221,9 +235,9 @@
                     </div>
                 </div>
 
-                <div class="font-label-md text-label-md text-on-surface-variant ml-2 hidden sm:block">
+                <!-- <div class="font-label-md text-label-md text-on-surface-variant ml-2 hidden sm:block">
                     {{ auth()->user()->name }}
-                </div>
+                </div> -->
             </div>
         </header>
 
