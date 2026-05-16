@@ -17,6 +17,8 @@ class Transaksi extends Model
         'user_id',
         'tipe_transaksi',
         'metode_pemesanan',
+        'alamat_pengiriman',
+        'no_hp_pengiriman',
         'status_transaksi',
         'tanggal_transaksi',
         'total_harga',

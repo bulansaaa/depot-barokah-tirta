@@ -1,0 +1,178 @@
+@extends('layouts.app')
+@section('title', 'Detail Transaksi')
+
+@section('content')
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <a href="{{ route('transaksi.index') }}" class="text-xs text-blue-500 hover:underline mb-1 block">← Kembali</a>
+        <h2 class="text-xl font-bold text-gray-800">Detail Transaksi</h2>
+    </div>
+    <div class="flex gap-2">
+        <a href="{{ route('transaksi.nota', $transaksi) }}"
+           class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
+            🖨️ Cetak Nota
+        </a>
+        <a href="{{ route('laporan.nota.pdf', $transaksi) }}"
+           class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700">
+            📄 Download PDF
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    {{-- Detail Kiri --}}
+    <div class="lg:col-span-2 space-y-4">
+
+        {{-- Info Transaksi --}}
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="font-semibold text-gray-700 mb-4">📋 Informasi Transaksi</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="text-gray-400">Kode Transaksi</p>
+                    <p class="font-mono font-bold text-gray-800">{{ $transaksi->kode_transaksi }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">Tanggal</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->tanggal_transaksi->format('d M Y H:i') }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">Pelanggan</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->pelanggan->nama ?? 'Umum' }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">No HP Pelanggan</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->pelanggan->no_hp ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">Tipe</p>
+                    <p class="font-medium text-gray-800 capitalize">{{ $transaksi->tipe_transaksi }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">Metode</p>
+                    <p class="font-medium text-gray-800 capitalize">{{ $transaksi->metode_pemesanan }}</p>
+                </div>
+                @if($transaksi->catatan)
+                <div class="col-span-2">
+                    <p class="text-gray-400">Catatan</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->catatan }}</p>
+                </div>
+                @endif
+                <div>
+                    <p class="text-gray-400">Dibuat oleh</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->user->name }}</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Detail Produk --}}
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+            <div class="p-5 border-b">
+                <h3 class="font-semibold text-gray-700">🫙 Detail Produk</h3>
+            </div>
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Produk</th>
+                        <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Harga Satuan</th>
+                        <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Qty</th>
+                        <th class="px-5 py-3 text-right text-xs text-gray-500 font-medium">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($transaksi->detail as $item)
+                    <tr>
+                        <td class="px-5 py-3 font-medium text-gray-800">{{ $item->produk->nama_produk }}</td>
+                        <td class="px-5 py-3 text-gray-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
+                        <td class="px-5 py-3 text-gray-600">{{ $item->qty }} {{ $item->produk->satuan }}</td>
+                        <td class="px-5 py-3 text-right font-semibold text-gray-800">
+                            Rp {{ number_format($item->subtotal, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot class="bg-gray-50">
+                    <tr>
+                        <td colspan="3" class="px-5 py-3 text-right font-bold text-gray-700">Total</td>
+                        <td class="px-5 py-3 text-right font-bold text-blue-600 text-lg">
+                            Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+
+    {{-- Sidebar Status --}}
+    <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="font-semibold text-gray-700 mb-4">⚡ Update Status</h3>
+
+            <div class="mb-4">
+                <p class="text-xs text-gray-400 mb-2">Status Saat Ini</p>
+                @php
+                    $stColor = [
+                        'pending'    => 'bg-yellow-100 text-yellow-700',
+                        'diproses'   => 'bg-blue-100 text-blue-700',
+                        'diantar'    => 'bg-orange-100 text-orange-700',
+                        'selesai'    => 'bg-green-100 text-green-700',
+                        'dibatalkan' => 'bg-red-100 text-red-700',
+                    ][$transaksi->status_transaksi] ?? 'bg-gray-100 text-gray-600';
+                @endphp
+                <span class="text-sm px-3 py-1 rounded-full font-medium {{ $stColor }}">
+                    {{ ucfirst($transaksi->status_transaksi) }}
+                </span>
+            </div>
+
+            @if(!in_array($transaksi->status_transaksi, ['selesai', 'dibatalkan']))
+            <form method="POST" action="{{ route('transaksi.status.update', $transaksi) }}">
+                @csrf @method('PATCH')
+                <div class="mb-3">
+                    <label class="block text-xs text-gray-500 mb-1">Ubah Status</label>
+                    <select name="status_transaksi"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        @foreach(['pending','diproses','diantar','selesai','dibatalkan'] as $s)
+                            <option value="{{ $s }}" {{ $transaksi->status_transaksi === $s ? 'selected' : '' }}>
+                                {{ ucfirst($s) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit"
+                        class="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700">
+                    Update Status
+                </button>
+            </form>
+            @endif
+        </div>
+
+        {{-- Alamat Pengiriman (jika antar) --}}
+        @if($transaksi->tipe_transaksi !== 'langsung')
+        <div class="bg-white rounded-xl shadow p-6">
+            <h3 class="font-semibold text-gray-700 mb-3">📍 Informasi Pengiriman</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <p class="text-xs text-gray-400">No HP Penerima</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->no_hp_pengiriman ?? '-' }}</p>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400">Alamat Lengkap</p>
+                    <p class="text-gray-700 leading-relaxed">{{ $transaksi->alamat_pengiriman ?? '-' }}</p>
+                </div>
+                
+                @php $waNumber = $transaksi->no_hp_pengiriman ?: ($transaksi->pelanggan->no_hp ?? ''); @endphp
+                @if($waNumber)
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', (str_starts_with($waNumber, '0') ? '62' . substr($waNumber, 1) : $waNumber)) }}"
+                   target="_blank"
+                   class="block w-full text-center bg-green-500 text-white py-2 rounded-lg text-sm hover:bg-green-600 transition">
+                    📱 WhatsApp Penerima
+                </a>
+                @endif
+            </div>
+        </div>
+        @endif
+    </div>
+
+</div>
+@endsection

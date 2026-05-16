@@ -51,15 +51,19 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pelanggan_id'     => 'nullable|exists:pelanggan,id',
-            'tipe_transaksi'   => 'required|in:langsung,antar,langganan',
-            'metode_pemesanan' => 'required|in:langsung,whatsapp,telepon',
-            'catatan'          => 'nullable|string',
-            'produk'           => 'required|array|min:1',
-            'produk.*.id'      => 'required|exists:produk,id',
-            'produk.*.qty'     => 'required|integer|min:1',
+            'pelanggan_id'      => 'nullable|exists:pelanggan,id',
+            'tipe_transaksi'    => 'required|in:langsung,antar,langganan',
+            'metode_pemesanan'  => 'required|in:langsung,whatsapp,telepon',
+            'alamat_pengiriman' => 'required_if:tipe_transaksi,antar,langganan|nullable|string',
+            'no_hp_pengiriman'  => 'required_if:tipe_transaksi,antar,langganan|nullable|string|max:20',
+            'catatan'           => 'nullable|string',
+            'produk'            => 'required|array|min:1',
+            'produk.*.id'       => 'required|exists:produk,id',
+            'produk.*.qty'      => 'required|integer|min:1',
         ], [
-            'produk.required' => 'Minimal satu produk harus dipilih.',
+            'produk.required'            => 'Minimal satu produk harus dipilih.',
+            'alamat_pengiriman.required_if' => 'Alamat pengiriman wajib diisi untuk tipe antar/langganan.',
+            'no_hp_pengiriman.required_if'  => 'No HP pengiriman wajib diisi untuk tipe antar/langganan.',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -85,15 +89,17 @@ class TransaksiController extends Controller
 
             // Buat header transaksi
             $transaksi = Transaksi::create([
-                'kode_transaksi'   => Transaksi::generateKode(),
-                'pelanggan_id'     => $request->pelanggan_id,
-                'user_id'          => auth()->id(),
-                'tipe_transaksi'   => $request->tipe_transaksi,
-                'metode_pemesanan' => $request->metode_pemesanan,
-                'status_transaksi' => $status,
-                'tanggal_transaksi'=> now(),
-                'total_harga'      => $total,
-                'catatan'          => $request->catatan,
+                'kode_transaksi'    => Transaksi::generateKode(),
+                'pelanggan_id'      => $request->pelanggan_id,
+                'user_id'           => auth()->id(),
+                'tipe_transaksi'    => $request->tipe_transaksi,
+                'metode_pemesanan'  => $request->metode_pemesanan,
+                'alamat_pengiriman' => $request->alamat_pengiriman,
+                'no_hp_pengiriman'  => $request->no_hp_pengiriman,
+                'status_transaksi'  => $status,
+                'tanggal_transaksi' => now(),
+                'total_harga'       => $total,
+                'catatan'           => $request->catatan,
             ]);
 
             // Buat detail transaksi
