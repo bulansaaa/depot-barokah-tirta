@@ -116,7 +116,7 @@
                         'pending'    => 'bg-yellow-100 text-yellow-700',
                         'diproses'   => 'bg-blue-100 text-blue-700',
                         'diantar'    => 'bg-orange-100 text-orange-700',
-                        'selesai'    => 'bg-green-100 text-green-700',
+                        'selesai'    => 'bg-[#d1fae5] text-[#065f46]',
                         'dibatalkan' => 'bg-red-100 text-red-700',
                     ][$transaksi->status_transaksi] ?? 'bg-gray-100 text-gray-600';
                 @endphp
@@ -126,7 +126,22 @@
             </div>
 
             @if(!in_array($transaksi->status_transaksi, ['selesai', 'dibatalkan']))
-            <form method="POST" action="{{ route('transaksi.status.update', $transaksi) }}">
+            <form method="POST" action="{{ route('transaksi.status.update', $transaksi) }}"
+                  x-on:submit.prevent="
+                    const form = $el;
+                    const val = form.querySelector('select[name=status_transaksi]').value;
+                    if(val === 'selesai' || val === 'dibatalkan') {
+                        $dispatch('confirm', {
+                            title: val === 'selesai' ? 'Selesaikan Transaksi?' : 'Batalkan Transaksi?',
+                            message: val === 'selesai' ? 'Pastikan pesanan sudah diterima dan pembayaran telah lunas.' : 'Transaksi yang dibatalkan tidak dapat diubah statusnya lagi.',
+                            onConfirm: () => form.submit(),
+                            confirmText: val === 'selesai' ? 'Ya, Selesai' : 'Ya, Batalkan',
+                            cancelText: 'Kembali'
+                        });
+                    } else {
+                        form.submit();
+                    }
+                  ">
                 @csrf @method('PATCH')
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Ubah Status</label>

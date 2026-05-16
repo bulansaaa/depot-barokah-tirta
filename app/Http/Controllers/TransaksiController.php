@@ -121,14 +121,23 @@ class TransaksiController extends Controller
 
     public function updateStatus(Request $request, Transaksi $transaksi)
     {
+        // Validasi: Jika sudah selesai atau dibatalkan, tidak boleh diubah lagi
+        if (in_array($transaksi->status_transaksi, ['selesai', 'dibatalkan'])) {
+            return redirect()->back()
+                ->with('error', 'Transaksi yang sudah selesai atau dibatalkan tidak dapat diubah statusnya.');
+        }
+
         $request->validate([
             'status_transaksi' => 'required|in:pending,diproses,diantar,selesai,dibatalkan',
         ]);
 
         $transaksi->update(['status_transaksi' => $request->status_transaksi]);
 
-        return redirect()->back()
-            ->with('success', 'Status transaksi berhasil diperbarui.');
+        $pesan = $request->status_transaksi === 'selesai' 
+            ? 'Transaksi telah berhasil diselesaikan.' 
+            : 'Status transaksi berhasil diperbarui menjadi ' . $request->status_transaksi . '.';
+
+        return redirect()->back()->with('success', $pesan);
     }
 
     public function destroy(Transaksi $transaksi)

@@ -11,7 +11,33 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        return view('laporan.index');
+        $today = today();
+        $startOfMonth = now()->startOfMonth();
+
+        $pendapatanHariIni = Transaksi::whereDate('tanggal_transaksi', $today)
+            ->where('status_transaksi', 'selesai')
+            ->sum('total_harga');
+
+        $pendapatanBulanIni = Transaksi::whereMonth('tanggal_transaksi', $startOfMonth->month)
+            ->whereYear('tanggal_transaksi', $startOfMonth->year)
+            ->where('status_transaksi', 'selesai')
+            ->sum('total_harga');
+
+        $totalTransaksiHariIni = Transaksi::whereDate('tanggal_transaksi', $today)
+            ->where('status_transaksi', 'selesai')
+            ->count();
+
+        $totalTransaksiBulanIni = Transaksi::whereMonth('tanggal_transaksi', $startOfMonth->month)
+            ->whereYear('tanggal_transaksi', $startOfMonth->year)
+            ->where('status_transaksi', 'selesai')
+            ->count();
+
+        return view('laporan.index', compact(
+            'pendapatanHariIni',
+            'pendapatanBulanIni',
+            'totalTransaksiHariIni',
+            'totalTransaksiBulanIni'
+        ));
     }
 
     public function harian(Request $request)

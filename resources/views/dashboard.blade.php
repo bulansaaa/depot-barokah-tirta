@@ -2,156 +2,191 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
-{{-- Statistik Cards --}}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-
-    <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Transaksi Hari Ini</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $transaksiHariIni }}</p>
-        <p class="text-xs text-gray-400 mt-1">transaksi</p>
+<div class="flex justify-between items-end mb-6">
+    <div>
+        <h1 class="font-headline-lg text-headline-lg text-on-surface mb-1 md:font-headline-lg md:text-headline-lg font-headline-lg-mobile text-headline-lg-mobile">Pusat Kendali</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant">Ringkasan operasional Depot Barokah Tirta hari ini.</p>
     </div>
+    <a href="{{ route('transaksi.create') }}" class="hidden md:flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-tint transition-colors shadow-sm">
+        <span class="material-symbols-outlined text-[18px]">add</span>
+        Transaksi Baru
+    </a>
+</div>
 
-    <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Pendapatan Hari Ini</p>
-        <p class="text-2xl font-bold text-green-600 mt-1">
-            Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}
-        </p>
-        <p class="text-xs text-gray-400 mt-1">dari transaksi selesai</p>
+<!-- Quick Stats -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter mb-6">
+    <!-- Card 1 -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+        <div class="flex justify-between items-start gap-2">
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Transaksi Hari Ini</span>
+            <div class="p-2 bg-primary-container/30 rounded-lg text-primary shrink-0">
+                <span class="material-symbols-outlined">local_shipping</span>
+            </div>
+        </div>
+        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">{{ $transaksiHariIni }}</div>
     </div>
-
-    <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Pendapatan Bulan Ini</p>
-        <p class="text-2xl font-bold text-purple-600 mt-1">
+    <!-- Card 2 -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-xl"></div>
+        <div class="flex justify-between items-start gap-2">
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Pendapatan Hari Ini</span>
+            <div class="p-2 bg-secondary-container/30 rounded-lg text-secondary shrink-0">
+                <span class="material-symbols-outlined">payments</span>
+            </div>
+        </div>
+        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</div>
+    </div>
+    <!-- Card 3 -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-xl"></div>
+        <div class="flex justify-between items-start gap-2">
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Pendapatan Bulan Ini</span>
+            <div class="p-2 bg-tertiary-container/30 rounded-lg text-tertiary shrink-0">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+            </div>
+        </div>
+        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface truncate" title="Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}">
             Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}
-        </p>
-        <p class="text-xs text-gray-400 mt-1">{{ $transaksibulanIni }} transaksi</p>
+        </div>
     </div>
-
-    <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-xs text-gray-500 uppercase tracking-wide">Total Pelanggan</p>
-        <p class="text-3xl font-bold text-orange-500 mt-1">{{ $totalPelanggan }}</p>
-        <p class="text-xs text-gray-400 mt-1">pelanggan terdaftar</p>
-    </div>
-
-</div>
-
-{{-- Status Transaksi + Jadwal Hari Ini --}}
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-
-    {{-- Status Pending --}}
-    <div class="bg-white rounded-xl shadow p-5">
-        <h3 class="text-sm font-semibold text-gray-600 mb-3">⏳ Status Transaksi</h3>
-        <div class="space-y-3">
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-500">Pending</span>
-                <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-1 rounded-full">
-                    {{ $transaksiPending }}
-                </span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-500">Diproses</span>
-                <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-full">
-                    {{ $transaksiDiproses }}
-                </span>
+    <!-- Card 4 -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+        <div class="flex justify-between items-start gap-2">
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Total Pelanggan</span>
+            <div class="p-2 bg-primary-container/30 rounded-lg text-primary shrink-0">
+                <span class="material-symbols-outlined">group</span>
             </div>
         </div>
-        <a href="{{ route('transaksi.index', ['status' => 'pending']) }}"
-           class="block mt-4 text-center text-xs text-blue-600 hover:underline">
-            Lihat semua →
-        </a>
+        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">{{ $totalPelanggan }}</div>
+    </div>
+</section>
+
+<!-- Middle Layout: Monitoring & Jadwal -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter mb-6">
+    <!-- Monitoring Status (col 8) -->
+    <div class="lg:col-span-8 flex flex-col gap-gutter">
+        <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Monitoring Status</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            <!-- Pending -->
+            <div class="bg-surface-container-lowest border border-tertiary-container rounded-xl p-6 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+                    <span class="material-symbols-outlined icon-filled">hourglass_empty</span>
+                </div>
+                <div class="flex-1">
+                    <div class="font-label-md text-label-md text-tertiary uppercase mb-1">Transaksi Pending</div>
+                    <div class="font-headline-md text-headline-md text-on-surface">{{ $transaksiPending }} Pesanan</div>
+                </div>
+                <a href="{{ route('transaksi.index', ['status' => 'pending']) }}" class="text-tertiary hover:bg-tertiary-container/10 p-2 rounded-full transition-colors">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+            </div>
+            <!-- Dalam Proses -->
+            <div class="bg-surface-container-lowest border border-primary-container rounded-xl p-6 shadow-sm flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined icon-filled">sync</span>
+                </div>
+                <div class="flex-1">
+                    <div class="font-label-md text-label-md text-primary uppercase mb-1">Dalam Proses</div>
+                    <div class="font-headline-md text-headline-md text-on-surface">{{ $transaksiDiproses }} Pengiriman</div>
+                </div>
+                <a href="{{ route('transaksi.index', ['status' => 'diproses']) }}" class="text-primary hover:bg-primary-container/10 p-2 rounded-full transition-colors">
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </a>
+            </div>
+        </div>
     </div>
 
-    {{-- Jadwal Pengantaran Hari Ini --}}
-    <div class="bg-white rounded-xl shadow p-5 lg:col-span-2">
-        <div class="flex justify-between items-center mb-3">
-            <h3 class="text-sm font-semibold text-gray-600">📅 Jadwal Antar Hari Ini</h3>
-            <span class="text-xs text-gray-400">{{ $jadwalHariIni->count() }} pelanggan</span>
+    <!-- Jadwal Hari Ini (col 4) -->
+    <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm flex flex-col h-[320px]">
+        <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center">
+            <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Jadwal Hari Ini</h2>
+            <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full">{{ $jadwalHariIni->count() }} Jadwal</span>
         </div>
-
-        @if($jadwalHariIni->isEmpty())
-            <p class="text-sm text-gray-400 text-center py-4">Tidak ada jadwal pengantaran hari ini.</p>
-        @else
-            <div class="space-y-2">
-                @foreach($jadwalHariIni as $jadwal)
-                    <div class="flex items-start gap-3 p-2 bg-gray-50 rounded-lg">
-                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm">
-                            💧
+        <div class="flex-1 overflow-y-auto p-2">
+            @forelse($jadwalHariIni as $jadwal)
+                <div class="flex justify-between items-center p-4 hover:bg-surface-container-low rounded-lg transition-colors border-b border-outline-variant/10 last:border-0">
+                    <div class="flex gap-3 items-center">
+                        <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary font-label-md">
+                            {{ substr($jadwal->pelanggan->nama, 0, 1) }}
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-700">{{ $jadwal->pelanggan->nama }}</p>
-                            <p class="text-xs text-gray-400 truncate">{{ $jadwal->alamat_pengiriman ?? $jadwal->pelanggan->alamat }}</p>
+                        <div>
+                            <div class="font-body-md text-body-md font-semibold text-on-surface">{{ $jadwal->pelanggan->nama }}</div>
+                            <div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+                                <span class="material-symbols-outlined text-[14px]">location_on</span>
+                                {{ $jadwal->alamat_pengiriman ?? $jadwal->pelanggan->alamat }}
+                            </div>
                         </div>
-                        <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id]) }}"
-                           class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 whitespace-nowrap">
-                            + Transaksi
-                        </a>
                     </div>
-                @endforeach
-            </div>
-        @endif
+                    <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id]) }}" class="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary p-2 rounded-lg transition-colors" title="Buat Transaksi">
+                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
+                    </a>
+                </div>
+            @empty
+                <div class="flex flex-col items-center justify-center h-full text-on-surface-variant opacity-50">
+                    <span class="material-symbols-outlined text-4xl mb-2">calendar_today</span>
+                    <p class="font-body-md">Tidak ada jadwal hari ini</p>
+                </div>
+            @endforelse
+        </div>
     </div>
+</section>
 
-</div>
-
-{{-- Transaksi Terbaru --}}
-<div class="bg-white rounded-xl shadow">
-    <div class="flex justify-between items-center p-5 border-b">
-        <h3 class="text-sm font-semibold text-gray-600">🧾 Transaksi Terbaru</h3>
-        <a href="{{ route('transaksi.index') }}" class="text-xs text-blue-600 hover:underline">Lihat semua →</a>
+<!-- Transaksi Terbaru -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden flex flex-col">
+    <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center bg-surface/50 backdrop-blur-sm">
+        <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Transaksi Terbaru</h2>
+        <a class="font-label-md text-label-md text-primary hover:underline" href="{{ route('transaksi.index') }}">Lihat Semua</a>
     </div>
     <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Kode</th>
-                    <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Pelanggan</th>
-                    <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Tipe</th>
-                    <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Total</th>
-                    <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Status</th>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-surface-container-low border-b border-outline-variant/30">
+                    <th class="p-4 font-label-md text-label-md text-on-surface-variant font-semibold">ID Transaksi</th>
+                    <th class="p-4 font-label-md text-label-md text-on-surface-variant font-semibold">Pelanggan</th>
+                    <th class="p-4 font-label-md text-label-md text-on-surface-variant font-semibold">Waktu</th>
+                    <th class="p-4 font-label-md text-label-md text-on-surface-variant font-semibold">Total</th>
+                    <th class="p-4 font-label-md text-label-md text-on-surface-variant font-semibold">Status</th>
+                    <th class="p-4 font-label-md text-label-md text-on-surface-variant font-semibold text-right">Aksi</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-outline-variant/10">
                 @forelse($transaksiTerbaru as $trx)
-                <tr class="hover:bg-gray-50">
-                    <td class="px-5 py-3 font-mono text-xs text-gray-600">{{ $trx->kode_transaksi }}</td>
-                    <td class="px-5 py-3 text-gray-700">{{ $trx->pelanggan->nama ?? 'Umum' }}</td>
-                    <td class="px-5 py-3">
-                        <span class="text-xs px-2 py-1 rounded-full
-                            {{ $trx->tipe_transaksi === 'langsung' ? 'bg-gray-100 text-gray-600' : '' }}
-                            {{ $trx->tipe_transaksi === 'antar' ? 'bg-blue-100 text-blue-600' : '' }}
-                            {{ $trx->tipe_transaksi === 'langganan' ? 'bg-purple-100 text-purple-600' : '' }}">
-                            {{ ucfirst($trx->tipe_transaksi) }}
-                        </span>
-                    </td>
-                    <td class="px-5 py-3 font-medium text-gray-700">
-                        Rp {{ number_format($trx->total_harga, 0, ',', '.') }}
-                    </td>
-                    <td class="px-5 py-3">
-                        @php
-                            $statusColor = [
-                                'pending'    => 'bg-yellow-100 text-yellow-700',
-                                'diproses'   => 'bg-blue-100 text-blue-700',
-                                'diantar'    => 'bg-orange-100 text-orange-700',
-                                'selesai'    => 'bg-green-100 text-green-700',
-                                'dibatalkan' => 'bg-red-100 text-red-700',
-                            ][$trx->status_transaksi] ?? 'bg-gray-100 text-gray-600';
-                        @endphp
-                        <span class="text-xs px-2 py-1 rounded-full {{ $statusColor }}">
-                            {{ ucfirst($trx->status_transaksi) }}
-                        </span>
-                    </td>
-                </tr>
+                    <tr class="hover:bg-surface-container-low/50 transition-colors">
+                        <td class="p-4 font-body-md text-body-md text-on-surface">#{{ $trx->kode_transaksi }}</td>
+                        <td class="p-4 font-body-md text-body-md text-on-surface font-medium">{{ $trx->pelanggan->nama ?? 'Umum' }}</td>
+                        <td class="p-4 font-body-md text-body-md text-on-surface-variant">{{ $trx->tanggal_transaksi->format('H:i') }} WIB</td>
+                        <td class="p-4 font-body-md text-body-md text-on-surface font-semibold">Rp {{ number_format($trx->total_harga, 0, ',', '.') }}</td>
+                        <td class="p-4">
+                            @php
+                                $statusClasses = [
+                                    'pending'    => 'bg-tertiary-container/30 text-tertiary',
+                                    'diproses'   => 'bg-primary-container/30 text-primary',
+                                    'diantar'    => 'bg-secondary-fixed/30 text-on-secondary-fixed-variant',
+                                    'selesai'    => 'bg-[#d1fae5] text-[#065f46]',
+                                    'dibatalkan' => 'bg-error-container/30 text-error',
+                                ][$trx->status_transaksi] ?? 'bg-surface-container text-on-surface-variant';
+                            @endphp
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-sm text-label-sm font-bold uppercase {{ $statusClasses }}">
+                                {{ $trx->status_transaksi }}
+                            </span>
+                        </td>
+                        <td class="p-4 text-right">
+                            <a href="{{ route('transaksi.show', $trx) }}" class="text-on-surface-variant hover:text-primary transition-colors p-1">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </a>
+                        </td>
+                    </tr>
                 @empty
-                <tr>
-                    <td colspan="5" class="px-5 py-8 text-center text-gray-400 text-sm">
-                        Belum ada transaksi hari ini.
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-on-surface-variant opacity-50">
+                            Belum ada transaksi hari ini
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</div>
-
+</section>
 @endsection

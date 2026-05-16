@@ -2,120 +2,140 @@
 @section('title', 'Jadwal Rutin')
 
 @section('content')
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-xl font-bold text-gray-800">📅 Jadwal Rutin Pengantaran</h2>
-    <a href="{{ route('jadwal-rutin.create') }}"
-       class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
-        + Tambah Jadwal
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div>
+        <h2 class="font-headline-lg text-headline-lg text-on-surface">Jadwal Rutin Pengantaran</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola pengiriman air rutin mingguan untuk pelanggan tetap.</p>
+    </div>
+    <a href="{{ route('jadwal-rutin.create') }}" class="bg-primary text-on-primary hover:bg-primary/90 active:scale-95 transition-all duration-200 px-6 py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
+        <span class="material-symbols-outlined text-[20px]">add</span>
+        Tambah Jadwal
     </a>
 </div>
 
-{{-- Jadwal Hari Ini --}}
+{{-- Jadwal Hari Ini Section --}}
 @if($jadwalHariIni->isNotEmpty())
-<div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-    <h3 class="text-sm font-semibold text-blue-700 mb-3">
-        📦 Pengantaran Hari Ini ({{ $hariIni }}) — {{ $jadwalHariIni->count() }} pelanggan
-    </h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+<section class="mb-8">
+    <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-primary">local_shipping</span>
+        <h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Pengantaran Hari Ini ({{ $hariIni }})</h3>
+        <span class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full ml-2">{{ $jadwalHariIni->count() }} Pelanggan</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
         @foreach($jadwalHariIni as $j)
-        <div class="bg-white rounded-lg p-3 border border-blue-100 flex items-start gap-3">
-            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-sm flex-shrink-0">💧</div>
+        <div class="bg-surface-container-lowest border border-primary/20 rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
+            <div class="w-10 h-10 bg-primary-container/20 rounded-full flex items-center justify-center text-primary flex-shrink-0">
+                <span class="material-symbols-outlined">person</span>
+            </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-800">{{ $j->pelanggan->nama }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ $j->alamat_pengiriman ?? $j->pelanggan->alamat }}</p>
-                <p class="text-xs text-gray-400">{{ $j->pelanggan->no_hp ?? '-' }}</p>
+                <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
+                <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $j->alamat_pengiriman ?? $j->pelanggan->alamat }}</p>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant">phone</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant">{{ $j->pelanggan->no_hp ?? '-' }}</span>
+                </div>
             </div>
             <a href="{{ route('transaksi.create', ['pelanggan_id' => $j->pelanggan_id]) }}"
-               class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 whitespace-nowrap flex-shrink-0">
-                + Trx
+               class="bg-primary text-on-primary p-2 rounded-lg hover:bg-surface-tint transition-colors flex-shrink-0" title="Buat Transaksi">
+                <span class="material-symbols-outlined">add_shopping_cart</span>
             </a>
         </div>
         @endforeach
     </div>
-</div>
+</section>
 @endif
 
-{{-- Filter --}}
-<form method="GET" class="flex gap-2 mb-4">
-    <select name="hari" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-        <option value="">Semua Hari</option>
-        @foreach($hariList as $h)
-            <option value="{{ $h }}" {{ request('hari') === $h ? 'selected' : '' }}>{{ $h }}</option>
-        @endforeach
-    </select>
-    <select name="status" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-        <option value="">Semua Status</option>
-        <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
-        <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-    </select>
-    <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-800">Filter</button>
-    @if(request()->hasAny(['hari','status']))
-        <a href="{{ route('jadwal-rutin.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-300">Reset</a>
-    @endif
-</form>
+<!-- Filters & List -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-sm overflow-hidden">
+    <!-- Toolbar -->
+    <div class="p-6 border-b border-outline-variant/30 bg-surface-container-low/50 flex flex-col md:flex-row justify-between items-center gap-4">
+        <form method="GET" class="flex flex-wrap gap-3 w-full md:w-auto">
+            <select name="hari" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
+                <option value="">Semua Hari</option>
+                @foreach($hariList as $h)
+                    <option value="{{ $h }}" {{ request('hari') === $h ? 'selected' : '' }}>{{ $h }}</option>
+                @endforeach
+            </select>
+            <select name="status" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors">
+                <option value="">Semua Status</option>
+                <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif</option>
+                <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+            </select>
+            <button type="submit" class="bg-surface-container-highest text-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-surface-container transition-colors">Filter</button>
+            @if(request()->hasAny(['hari','status']))
+                <a href="{{ route('jadwal-rutin.index') }}" class="flex items-center text-on-surface-variant hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </a>
+            @endif
+        </form>
+    </div>
 
-{{-- Tabel --}}
-<div class="bg-white rounded-xl shadow overflow-hidden">
-    <table class="w-full text-sm">
-        <thead class="bg-gray-50 border-b">
-            <tr>
-                <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Pelanggan</th>
-                <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Hari Pengiriman</th>
-                <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Alamat Pengiriman</th>
-                <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Catatan</th>
-                <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Status</th>
-                <th class="px-5 py-3 text-left text-xs text-gray-500 font-medium">Aksi</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-            @forelse($jadwal as $j)
-            <tr class="hover:bg-gray-50 {{ !$j->status_aktif ? 'opacity-60' : '' }}">
-                <td class="px-5 py-3">
-                    <p class="font-medium text-gray-800">{{ $j->pelanggan->nama }}</p>
-                    <p class="text-xs text-gray-400">{{ $j->pelanggan->no_hp }}</p>
-                </td>
-                <td class="px-5 py-3">
-                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full font-medium">
-                        {{ $j->hari_pengiriman }}
-                    </span>
-                </td>
-                <td class="px-5 py-3 text-gray-600 max-w-xs truncate">
-                    {{ $j->alamat_pengiriman ?? $j->pelanggan->alamat ?? '-' }}
-                </td>
-                <td class="px-5 py-3 text-gray-500 text-xs">{{ $j->catatan ?? '-' }}</td>
-                <td class="px-5 py-3">
-                    <span class="text-xs px-2 py-1 rounded-full font-medium
-                        {{ $j->status_aktif ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                        {{ $j->status_aktif ? 'Aktif' : 'Nonaktif' }}
-                    </span>
-                </td>
-                <td class="px-5 py-3">
-                    <div class="flex gap-2">
-                        <a href="{{ route('jadwal-rutin.edit', $j) }}"
-                           class="text-xs text-yellow-600 hover:underline">Edit</a>
-                        <form method="POST" action="{{ route('jadwal-rutin.toggle', $j) }}">
-                            @csrf @method('PATCH')
-                            <button class="text-xs {{ $j->status_aktif ? 'text-orange-500' : 'text-green-600' }} hover:underline">
-                                {{ $j->status_aktif ? 'Nonaktifkan' : 'Aktifkan' }}
-                            </button>
-                        </form>
-                        <form method="POST" action="{{ route('jadwal-rutin.destroy', $j) }}"
-                              onsubmit="return confirm('Hapus jadwal ini?')">
-                            @csrf @method('DELETE')
-                            <button class="text-xs text-red-600 hover:underline">Hapus</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="6" class="px-5 py-10 text-center text-gray-400">
-                    Belum ada jadwal rutin.
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-    <div class="px-5 py-4 border-t">{{ $jadwal->links() }}</div>
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-surface-container-low/30 border-b border-outline-variant/30 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+                    <th class="px-6 py-4 font-semibold">Pelanggan</th>
+                    <th class="px-6 py-4 font-semibold">Hari Pengiriman</th>
+                    <th class="px-6 py-4 font-semibold hidden md:table-cell">Alamat</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                    <th class="px-6 py-4 font-semibold text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="font-body-md text-body-md text-on-surface divide-y divide-outline-variant/20">
+                @forelse($jadwal as $j)
+                <tr class="hover:bg-surface-container/50 transition-colors {{ !$j->status_aktif ? 'opacity-60 grayscale' : '' }}">
+                    <td class="px-6 py-4">
+                        <p class="font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
+                        <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $j->pelanggan->no_hp }}</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="bg-primary-container/30 text-primary font-label-md text-label-md px-2.5 py-1 rounded-full">{{ $j->hari_pengiriman }}</span>
+                    </td>
+                    <td class="px-6 py-4 hidden md:table-cell max-w-xs truncate text-on-surface-variant">
+                        {{ $j->alamat_pengiriman ?? $j->pelanggan->alamat ?? '-' }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="font-label-sm text-label-sm font-bold uppercase {{ $j->status_aktif ? 'text-secondary' : 'text-on-surface-variant' }}">
+                            {{ $j->status_aktif ? 'Aktif' : 'Nonaktif' }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <div class="flex justify-end gap-2 text-on-surface-variant">
+                            <a href="{{ route('jadwal-rutin.edit', $j) }}" class="hover:text-primary transition-colors p-1" title="Edit">
+                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                            </a>
+                            <form method="POST" action="{{ route('jadwal-rutin.toggle', $j) }}" class="inline">
+                                @csrf @method('PATCH')
+                                <button class="hover:text-primary transition-colors p-1" title="{{ $j->status_aktif ? 'Nonaktifkan' : 'Aktifkan' }}">
+                                    <span class="material-symbols-outlined text-[20px]">{{ $j->status_aktif ? 'toggle_on' : 'toggle_off' }}</span>
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ route('jadwal-rutin.destroy', $j) }}" class="inline" onsubmit="return confirm('Hapus jadwal ini?')">
+                                @csrf @method('DELETE')
+                                <button class="hover:text-error transition-colors p-1" title="Hapus">
+                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-on-surface-variant opacity-50">
+                        Belum ada jadwal rutin.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    
+    @if($jadwal->hasPages())
+    <div class="px-6 py-4 border-t border-outline-variant/30 bg-surface-container-low/30">
+        {{ $jadwal->links() }}
+    </div>
+    @endif
 </div>
 @endsection
