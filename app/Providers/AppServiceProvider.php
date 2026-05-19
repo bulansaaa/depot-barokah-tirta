@@ -27,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
             $jadwalHariIniGlobal = JadwalRutin::with('pelanggan')
                 ->aktif()
                 ->hari($hariIni)
+                ->whereDoesntHave('pelanggan.transaksi', function ($query) {
+                    $query->whereDate('tanggal_transaksi', Carbon::today());
+                })
                 ->get();
             
             $view->with('jadwalHariIniGlobal', $jadwalHariIniGlobal);

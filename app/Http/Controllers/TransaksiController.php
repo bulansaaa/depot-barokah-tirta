@@ -52,18 +52,18 @@ class TransaksiController extends Controller
     {
         $request->validate([
             'pelanggan_id'      => 'nullable|exists:pelanggan,id',
-            'tipe_transaksi'    => 'required|in:langsung,antar,langganan',
+            'tipe_transaksi'    => 'required|in:langsung,antar',
             'metode_pemesanan'  => 'required|in:langsung,whatsapp,telepon',
-            'alamat_pengiriman' => 'required_if:tipe_transaksi,antar,langganan|nullable|string',
-            'no_hp_pengiriman'  => 'required_if:tipe_transaksi,antar,langganan|nullable|string|max:20',
+            'alamat_pengiriman' => 'required_if:tipe_transaksi,antar|nullable|string',
+            'no_hp_pengiriman'  => 'required_if:tipe_transaksi,antar|nullable|string|max:20',
             'catatan'           => 'nullable|string',
             'produk'            => 'required|array|min:1',
             'produk.*.id'       => 'required|exists:produk,id',
             'produk.*.qty'      => 'required|integer|min:1',
         ], [
             'produk.required'            => 'Minimal satu produk harus dipilih.',
-            'alamat_pengiriman.required_if' => 'Alamat pengiriman wajib diisi untuk tipe antar/langganan.',
-            'no_hp_pengiriman.required_if'  => 'No HP pengiriman wajib diisi untuk tipe antar/langganan.',
+            'alamat_pengiriman.required_if' => 'Alamat pengiriman wajib diisi untuk tipe antar.',
+            'no_hp_pengiriman.required_if'  => 'No HP pengiriman wajib diisi untuk tipe antar.',
         ]);
 
         DB::transaction(function () use ($request) {

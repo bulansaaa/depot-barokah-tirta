@@ -18,7 +18,9 @@ class JadwalRutinController extends Controller
     {
         $hariIni = Carbon::now()->locale('id')->isoFormat('dddd');
 
-        $query = JadwalRutin::with('pelanggan');
+        $query = JadwalRutin::with(['pelanggan', 'pelanggan.transaksi' => function ($q) {
+            $q->whereDate('tanggal_transaksi', Carbon::today());
+        }]);
 
         if ($request->filled('hari')) {
             $query->hari($request->hari);
@@ -31,11 +33,23 @@ class JadwalRutinController extends Controller
         $jadwal   = $query->latest()->paginate(10)->withQueryString();
         $hariList = $this->hariList;
 
+        // Add a temporary attribute to check if delivered today for the main list
+        $jadwal->getCollection()->each(function ($j) use ($hariIni) {
+            $j->terkirim_hari_ini = $j->hari_pengiriman === $hariIni && $j->pelanggan->transaksi->isNotEmpty();
+        });
+
         // Jadwal aktif hari ini
-        $jadwalHariIni = JadwalRutin::with('pelanggan')
+        $jadwalHariIni = JadwalRutin::with(['pelanggan', 'pelanggan.transaksi' => function ($query) {
+                $query->whereDate('tanggal_transaksi', Carbon::today());
+            }])
             ->aktif()
             ->hari($hariIni)
             ->get();
+
+        // Add a temporary attribute to check if delivered today
+        $jadwalHariIni->each(function ($j) {
+            $j->terkirim_hari_ini = $j->pelanggan->transaksi->isNotEmpty();
+        });
 
         return view('jadwal-rutin.index', compact('jadwal', 'hariList', 'jadwalHariIni', 'hariIni'));
     }

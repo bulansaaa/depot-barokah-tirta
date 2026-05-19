@@ -27,7 +27,7 @@
 
 ### 4. Sistem Transaksi (Transaksi)
 - **Pencatatan Penjualan:** 
-  - **Tipe Transaksi:** Langsung (beli di tempat), Antar (dikirim ke alamat), Langganan.
+  - **Tipe Transaksi:** Langsung (beli di tempat) dan Antar (dikirim ke alamat).
   - **Metode Pemesanan:** WA, Telepon, atau Datang Langsung.
 - **Workflow Status:** `Pending` -> `Diproses` -> `Diantar` -> `Selesai` / `Dibatalkan`.
 - **Manajemen Alamat:** Khusus tipe 'Antar', bisa menggunakan alamat pelanggan atau alamat pengiriman berbeda.

@@ -160,7 +160,7 @@ class LaporanController extends Controller
     {
         $transaksi->load('pelanggan', 'user', 'detail.produk');
 
-        $pdf = Pdf::loadView('transaksi.nota-pdf', compact('transaksi'))
+        $pdf = Pdf::loadView('laporan.nota-pdf', compact('transaksi'))
             ->setPaper([0, 0, 226, 400]); // Ukuran kertas struk kecil
 
         $filename = 'nota-' . $transaksi->kode_transaksi . '.pdf';

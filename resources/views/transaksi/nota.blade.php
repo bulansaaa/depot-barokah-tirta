@@ -24,7 +24,7 @@
            class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700">
             📄 PDF
         </a>
-        <a href="{{ route('transaksi.index', $transaksi) }}"
+        <a href="{{ route('transaksi.index') }}"
            class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700">
             ← Kembali
         </a>

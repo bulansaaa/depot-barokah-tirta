@@ -40,7 +40,7 @@
             <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Tipe</label>
             <select name="tipe" class="w-full px-4 py-2 bg-surface rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-md text-body-md text-on-surface transition-all">
                 <option value="">Semua Tipe</option>
-                @foreach(['langsung','antar','langganan'] as $t)
+                @foreach(['langsung','antar'] as $t)
                     <option value="{{ $t }}" {{ request('tipe') === $t ? 'selected' : '' }}>{{ ucfirst($t) }}</option>
                 @endforeach
             </select>
@@ -88,7 +88,7 @@
                         <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $trx->tanggal_transaksi->format('d M Y, H:i') }}</p>
                     </td>
                     <td class="px-6 py-4">
-                        <span class="font-label-sm text-label-sm font-bold uppercase {{ $trx->tipe_transaksi === 'antar' ? 'text-primary' : ($trx->tipe_transaksi === 'langganan' ? 'text-tertiary' : 'text-on-surface-variant') }}">
+                        <span class="font-label-sm text-label-sm font-bold uppercase {{ $trx->tipe_transaksi === 'antar' ? 'text-primary' : 'text-on-surface-variant' }}">
                             {{ $trx->tipe_transaksi }}
                         </span>
                     </td>

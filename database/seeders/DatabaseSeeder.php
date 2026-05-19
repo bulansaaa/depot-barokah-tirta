@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
                 'nama'       => 'Siti Rahayu',
                 'no_hp'      => '08987654321',
                 'alamat'     => 'Jl. Melati No. 5, Magelang',
-                'catatan'    => 'Pelanggan langganan',
+                'catatan'    => 'Pelanggan setia',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

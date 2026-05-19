@@ -215,7 +215,7 @@
                                                 <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $jdwl->pelanggan->nama }}</p>
                                                 <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $jdwl->alamat_pengiriman ?? $jdwl->pelanggan->alamat }}</p>
                                             </div>
-                                            <a href="{{ route('transaksi.create', ['pelanggan_id' => $jdwl->pelanggan_id]) }}" 
+                                            <a href="{{ route('transaksi.create', ['pelanggan_id' => $jdwl->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" 
                                                class="p-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-on-primary transition-colors">
                                                 <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
                                             </a>

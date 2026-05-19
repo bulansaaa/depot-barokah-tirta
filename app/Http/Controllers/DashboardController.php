@@ -31,10 +31,13 @@ class DashboardController extends Controller
         $transaksiPending = Transaksi::byStatus('pending')->count();
         $transaksiDiproses = Transaksi::byStatus('diproses')->count();
 
-        // Jadwal pengantaran hari ini
+        // Jadwal pengantaran hari ini (hanya yang belum terkirim)
         $jadwalHariIni = JadwalRutin::with('pelanggan')
             ->aktif()
             ->hari($hariIni)
+            ->whereDoesntHave('pelanggan.transaksi', function ($query) {
+                $query->whereDate('tanggal_transaksi', Carbon::today());
+            })
             ->get();
 
         // Transaksi terbaru (5 terakhir)

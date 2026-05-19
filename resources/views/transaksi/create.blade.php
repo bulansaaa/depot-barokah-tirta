@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <!-- Transaction Context Card -->
+            <!-- Order Details Card -->
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-gutter shadow-sm">
                 <h3 class="font-headline-sm text-headline-sm text-on-surface mb-6 flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">local_shipping</span>
@@ -63,16 +63,12 @@
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">Transaction Type</label>
                         <div class="flex flex-col gap-3">
                             <label class="flex items-center p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/20">
-                                <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="langsung" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi', 'langsung') == 'langsung' ? 'checked' : '' }}/>
+                                <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="langsung" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi', request('tipe_transaksi', 'langsung')) == 'langsung' ? 'checked' : '' }}/>
                                 <span class="ml-3 font-body-md text-body-md text-on-surface">Langsung (Walk-in)</span>
                             </label>
                             <label class="flex items-center p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/20">
-                                <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="antar" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi') == 'antar' ? 'checked' : '' }}/>
+                                <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="antar" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi', request('tipe_transaksi')) == 'antar' ? 'checked' : '' }}/>
                                 <span class="ml-3 font-body-md text-body-md text-on-surface">Antar (Delivery)</span>
-                            </label>
-                            <label class="flex items-center p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/20">
-                                <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="langganan" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi') == 'langganan' ? 'checked' : '' }}/>
-                                <span class="ml-3 font-body-md text-body-md text-on-surface">Langganan (Subscription)</span>
                             </label>
                         </div>
                     </div>
@@ -100,7 +96,7 @@
                 </div>
 
                 <!-- Conditional Address & Info Field -->
-                <div id="deliveryFields" class="mt-6 pt-6 border-t border-outline-variant/30 {{ in_array(old('tipe_transaksi'), ['antar', 'langganan']) ? '' : 'hidden' }}">
+                <div id="deliveryFields" class="mt-6 pt-6 border-t border-outline-variant/30 {{ old('tipe_transaksi', request('tipe_transaksi')) === 'antar' ? '' : 'hidden' }}">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="col-span-1">
                             <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">No HP Penerima</label>
@@ -167,8 +163,8 @@
                                     <button type="button" onclick="changeQty(this, -1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-l-lg hover:bg-surface-container-low">
                                         <span class="material-symbols-outlined text-[18px]">remove</span>
                                     </button>
-                                    <input name="produk[{{ $index }}][qty]" value="{{ $item['qty'] }}" min="1" readonly
-                                           class="w-10 h-8 text-center bg-transparent border-x border-outline-variant/50 font-body-md text-body-md text-on-surface focus:outline-none" type="text"/>
+                                    <input name="produk[{{ $index }}][qty]" value="{{ $item['qty'] }}" min="1" oninput="hitungTotal()"
+                                           class="w-16 h-8 text-center bg-transparent border-x border-outline-variant/50 font-body-md text-body-md text-on-surface focus:outline-none" type="number"/>
                                     <button type="button" onclick="changeQty(this, 1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-r-lg hover:bg-surface-container-low">
                                         <span class="material-symbols-outlined text-[18px]">add</span>
                                     </button>
@@ -222,9 +218,12 @@
 let barisIndex = {{ count($oldProduk) }};
 
 function toggleDeliveryFields() {
-    const tipe = document.querySelector('input[name="tipe_transaksi"]:checked').value;
+    const radioChecked = document.querySelector('input[name="tipe_transaksi"]:checked');
+    if (!radioChecked) return;
+    
+    const tipe = radioChecked.value;
     const fields = document.getElementById('deliveryFields');
-    if (tipe === 'antar' || tipe === 'langganan') {
+    if (tipe === 'antar') {
         fields.classList.remove('hidden');
     } else {
         fields.classList.add('hidden');
@@ -241,13 +240,29 @@ function updateCustomerDetails() {
         
         document.getElementById('alamatPengiriman').value = alamat || '';
         document.getElementById('noHpPengiriman').value = nohp || '';
+
+        // If customer has an address, auto-set to delivery if currently walk-in
+        if (alamat && alamat.trim() !== "") {
+            const currentTipe = document.querySelector('input[name="tipe_transaksi"]:checked');
+            if (currentTipe && currentTipe.value === 'langsung') {
+                const antarRadio = document.querySelector('input[name="tipe_transaksi"][value="antar"]');
+                if (antarRadio) {
+                    antarRadio.checked = true;
+                    toggleDeliveryFields();
+                }
+            }
+        }
+    } else {
+        // Clear fields if Pelanggan Umum is selected
+        document.getElementById('alamatPengiriman').value = '';
+        document.getElementById('noHpPengiriman').value = '';
     }
 }
 
 function changeQty(btn, delta) {
     const input = btn.parentElement.querySelector('input');
     let val = parseInt(input.value) + delta;
-    if (val < 1) val = 1;
+    if (isNaN(val) || val < 1) val = 1;
     input.value = val;
     hitungTotal();
 }
@@ -260,7 +275,11 @@ function updateRowInfo(select) {
     if (selectedOption && selectedOption.value !== "") {
         const harga = parseFloat(selectedOption.dataset.harga);
         const satuan = selectedOption.dataset.satuan;
-        priceLabel.textContent = `${satuan} • Rp ${harga.toLocaleString('id-ID')}`;
+        priceLabel.textContent = `\${satuan} • Rp \${harga.toLocaleString('id-ID')}`;
+        
+        // Auto-focus quantity input
+        const qtyInput = row.querySelector('input[name*="[qty]"]');
+        if (qtyInput) qtyInput.focus();
     } else {
         priceLabel.textContent = 'Pilih produk untuk melihat harga';
     }
@@ -271,7 +290,7 @@ function tambahBarisProduk() {
     const container = document.getElementById('produkContainer');
     const firstSelect = document.querySelector('select[name^="produk[0][id]"]') || document.querySelector('select[name$="[id]"]');
     const optionsProduk = Array.from(firstSelect.options)
-        .map(o => `<option value="${o.value}" data-harga="${o.dataset.harga || 0}" data-satuan="${o.dataset.satuan || ''}">${o.text}</option>`)
+        .map(o => `<option value="\${o.value}" data-harga="\${o.dataset.harga || 0}" data-satuan="\${o.dataset.satuan || ''}">\${o.text}</option>`)
         .join('');
 
     const div = document.createElement('div');
@@ -282,9 +301,9 @@ function tambahBarisProduk() {
                 <span class="material-symbols-outlined">water_bottle</span>
             </div>
             <div class="flex-1">
-                <select name="produk[${barisIndex}][id]" onchange="updateRowInfo(this)"
+                <select name="produk[\${barisIndex}][id]" onchange="updateRowInfo(this)"
                         class="w-full bg-transparent border-none font-body-md text-body-md font-semibold text-on-surface focus:ring-0 p-0 appearance-none">
-                    ${optionsProduk}
+                    \${optionsProduk}
                 </select>
                 <p class="font-label-sm text-label-sm text-on-surface-variant price-label">Pilih produk untuk melihat harga</p>
             </div>
@@ -294,8 +313,8 @@ function tambahBarisProduk() {
                 <button type="button" onclick="changeQty(this, -1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-l-lg hover:bg-surface-container-low">
                     <span class="material-symbols-outlined text-[18px]">remove</span>
                 </button>
-                <input name="produk[${barisIndex}][qty]" value="1" min="1" readonly
-                       class="w-10 h-8 text-center bg-transparent border-x border-outline-variant/50 font-body-md text-body-md text-on-surface focus:outline-none" type="text"/>
+                <input name="produk[\${barisIndex}][qty]" value="1" min="1" oninput="hitungTotal()"
+                       class="w-16 h-8 text-center bg-transparent border-x border-outline-variant/50 font-body-md text-body-md text-on-surface focus:outline-none" type="number"/>
                 <button type="button" onclick="changeQty(this, 1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-r-lg hover:bg-surface-container-low">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                 </button>
@@ -330,7 +349,8 @@ function hitungTotal() {
         const subtotalEl = baris.querySelector('.subtotal');
         const selectedOption = select.options[select.selectedIndex];
         const harga = parseFloat(selectedOption?.dataset?.harga || 0);
-        const qty = parseInt(qtyInput?.value || 1);
+        let qty = parseInt(qtyInput?.value || 0);
+        if (qty < 0) qty = 0;
         const subtotal = harga * qty;
         total += subtotal;
         if (subtotalEl) {
@@ -342,6 +362,8 @@ function hitungTotal() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    updateCustomerDetails();
+    toggleDeliveryFields();
     hitungTotal();
 });
 </script>

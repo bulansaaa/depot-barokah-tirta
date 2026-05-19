@@ -24,22 +24,33 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
         @foreach($jadwalHariIni as $j)
-        <div class="bg-surface-container-lowest border border-primary/20 rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow">
-            <div class="w-10 h-10 bg-primary-container/20 rounded-full flex items-center justify-center text-primary flex-shrink-0">
+        <div class="bg-surface-container-lowest border {{ $j->terkirim_hari_ini ? 'border-secondary/30 bg-secondary/5' : 'border-primary/20' }} rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow relative overflow-hidden">
+            @if($j->terkirim_hari_ini)
+                <div class="absolute top-0 right-0 p-1 bg-secondary text-on-secondary rounded-bl-lg">
+                    <span class="material-symbols-outlined text-[16px]">check</span>
+                </div>
+            @endif
+            <div class="w-10 h-10 {{ $j->terkirim_hari_ini ? 'bg-secondary/20 text-secondary' : 'bg-primary-container/20 text-primary' }} rounded-full flex items-center justify-center flex-shrink-0">
                 <span class="material-symbols-outlined">person</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
+                <p class="font-body-md text-body-md font-semibold text-on-surface {{ $j->terkirim_hari_ini ? 'line-through opacity-60' : '' }}">{{ $j->pelanggan->nama }}</p>
                 <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $j->alamat_pengiriman ?? $j->pelanggan->alamat }}</p>
                 <div class="flex items-center gap-2 mt-2">
                     <span class="material-symbols-outlined text-[14px] text-on-surface-variant">phone</span>
                     <span class="font-label-sm text-label-sm text-on-surface-variant">{{ $j->pelanggan->no_hp ?? '-' }}</span>
                 </div>
             </div>
-            <a href="{{ route('transaksi.create', ['pelanggan_id' => $j->pelanggan_id]) }}"
+            @if(!$j->terkirim_hari_ini)
+            <a href="{{ route('transaksi.create', ['pelanggan_id' => $j->pelanggan_id, 'tipe_transaksi' => 'antar']) }}"
                class="bg-primary text-on-primary p-2 rounded-lg hover:bg-surface-tint transition-colors flex-shrink-0" title="Buat Transaksi">
                 <span class="material-symbols-outlined">add_shopping_cart</span>
             </a>
+            @else
+            <div class="text-secondary p-2 flex-shrink-0" title="Sudah Terkirim">
+                <span class="material-symbols-outlined icon-filled">check_circle</span>
+            </div>
+            @endif
         </div>
         @endforeach
     </div>
@@ -87,7 +98,12 @@
                 @forelse($jadwal as $j)
                 <tr class="hover:bg-surface-container/50 transition-colors {{ !$j->status_aktif ? 'opacity-60 grayscale' : '' }}">
                     <td class="px-6 py-4">
-                        <p class="font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
+                        <div class="flex items-center gap-2">
+                            <p class="font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
+                            @if($j->terkirim_hari_ini)
+                                <span class="material-symbols-outlined text-secondary text-[18px] icon-filled" title="Terkirim Hari Ini">check_circle</span>
+                            @endif
+                        </div>
                         <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $j->pelanggan->no_hp }}</p>
                     </td>
                     <td class="px-6 py-4">
@@ -97,9 +113,14 @@
                         {{ $j->alamat_pengiriman ?? $j->pelanggan->alamat ?? '-' }}
                     </td>
                     <td class="px-6 py-4">
-                        <span class="font-label-sm text-label-sm font-bold uppercase {{ $j->status_aktif ? 'text-secondary' : 'text-on-surface-variant' }}">
-                            {{ $j->status_aktif ? 'Aktif' : 'Nonaktif' }}
-                        </span>
+                        <div class="flex flex-col gap-1">
+                            <span class="font-label-sm text-label-sm font-bold uppercase {{ $j->status_aktif ? 'text-secondary' : 'text-on-surface-variant' }}">
+                                {{ $j->status_aktif ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                            @if($j->terkirim_hari_ini)
+                                <span class="bg-secondary/10 text-secondary text-[10px] font-bold uppercase px-1.5 py-0.5 rounded w-fit">Terkirim</span>
+                            @endif
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex justify-end gap-2 text-on-surface-variant">

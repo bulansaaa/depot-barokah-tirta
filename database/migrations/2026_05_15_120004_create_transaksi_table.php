@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('kode_transaksi', 30)->unique();
             $table->foreignId('pelanggan_id')->nullable()->constrained('pelanggan')->nullOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->enum('tipe_transaksi', ['langsung', 'antar', 'langganan'])->default('langsung');
+            $table->enum('tipe_transaksi', ['langsung', 'antar'])->default('langsung');
             $table->enum('metode_pemesanan', ['langsung', 'whatsapp', 'telepon'])->default('langsung');
             $table->enum('status_transaksi', ['pending', 'diproses', 'diantar', 'selesai', 'dibatalkan'])->default('pending');
             $table->datetime('tanggal_transaksi');
