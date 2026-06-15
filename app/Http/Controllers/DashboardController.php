@@ -40,6 +40,13 @@ class DashboardController extends Controller
             })
             ->get();
 
+        // Jadwal pengantaran besok
+        $hariBesok = Carbon::tomorrow()->locale('id')->isoFormat('dddd');
+        $jadwalBesok = JadwalRutin::with('pelanggan')
+            ->aktif()
+            ->hari($hariBesok)
+            ->get();
+
         // Transaksi terbaru (5 terakhir)
         $transaksiTerbaru = Transaksi::with('pelanggan')
             ->latest()
@@ -57,6 +64,8 @@ class DashboardController extends Controller
             'transaksiPending',
             'transaksiDiproses',
             'jadwalHariIni',
+            'jadwalBesok',
+            'hariBesok',
             'transaksiTerbaru',
             'totalPelanggan'
         ));

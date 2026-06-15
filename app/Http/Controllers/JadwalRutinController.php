@@ -51,7 +51,14 @@ class JadwalRutinController extends Controller
             $j->terkirim_hari_ini = $j->pelanggan->transaksi->isNotEmpty();
         });
 
-        return view('jadwal-rutin.index', compact('jadwal', 'hariList', 'jadwalHariIni', 'hariIni'));
+        // Jadwal aktif hari besok
+        $hariBesok     = Carbon::tomorrow()->locale('id')->isoFormat('dddd');
+        $jadwalBesok   = JadwalRutin::with('pelanggan')
+            ->aktif()
+            ->hari($hariBesok)
+            ->get();
+
+        return view('jadwal-rutin.index', compact('jadwal', 'hariList', 'jadwalHariIni', 'hariIni', 'jadwalBesok', 'hariBesok'));
     }
 
     public function create()

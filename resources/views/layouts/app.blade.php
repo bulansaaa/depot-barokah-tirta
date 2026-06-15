@@ -6,6 +6,7 @@
     <title>{{ config('app.name') }} - @yield('title', 'Dashboard')</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="https://unpkg.com/lucide@latest"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         .material-symbols-outlined {
@@ -14,11 +15,17 @@
         .icon-filled {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        .lucide {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2;
+        }
     </style>
-</head>
-<body class="bg-background font-body-md text-body-md text-on-surface antialiased" 
+    </head>
+    <body class="bg-background font-body-md text-body-md text-on-surface antialiased" 
+      x-init="lucide.createIcons()"
       x-data="{ 
-        mobileMenuOpen: false,
+    ...
         confirmModal: {
             show: false,
             title: '',
@@ -51,50 +58,50 @@
             <!-- Active Tab: Dashboard -->
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('dashboard') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
                href="{{ route('dashboard') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('dashboard') ? 'icon-filled' : '' }}">dashboard</span>
+                <i data-lucide="layout-dashboard"></i>
                 <span class="font-label-md text-label-md">Dashboard</span>
             </a>
 
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('pelanggan.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
                href="{{ route('pelanggan.index') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('pelanggan.*') ? 'icon-filled' : '' }}">group</span>
+                <i data-lucide="users"></i>
                 <span class="font-label-md text-label-md">Pelanggan</span>
             </a>
 
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('produk.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
                href="{{ route('produk.index') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('produk.*') ? 'icon-filled' : '' }}">inventory_2</span>
+                <i data-lucide="package"></i>
                 <span class="font-label-md text-label-md">Produk</span>
             </a>
 
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('transaksi.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
                href="{{ route('transaksi.index') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('transaksi.*') ? 'icon-filled' : '' }}">receipt_long</span>
+                <i data-lucide="receipt"></i>
                 <span class="font-label-md text-label-md">Transaksi</span>
             </a>
 
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('jadwal-rutin.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
                href="{{ route('jadwal-rutin.index') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('jadwal-rutin.*') ? 'icon-filled' : '' }}">calendar_today</span>
+                <i data-lucide="calendar"></i>
                 <span class="font-label-md text-label-md">Jadwal Rutin</span>
             </a>
 
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('laporan.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
                href="{{ route('laporan.index') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('laporan.*') ? 'icon-filled' : '' }}">analytics</span>
+                <i data-lucide="bar-chart-3"></i>
                 <span class="font-label-md text-label-md">Laporan</span>
             </a>
         </nav>
         <div class="mt-auto flex flex-col gap-1 border-t border-outline-variant/30 pt-4 px-0">
             <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container hover:translate-x-1 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('profile.*') ? 'text-primary' : '' }}"
                href="{{ route('profile.edit') }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('profile.*') ? 'icon-filled' : '' }}">settings</span>
+                <i data-lucide="settings"></i>
                 <span class="font-label-md text-label-md">Pengaturan</span>
             </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container hover:translate-x-1 transition-all duration-300 cursor-pointer active:bg-surface-container-high">
-                    <span class="material-symbols-outlined">logout</span>
+                    <i data-lucide="log-out"></i>
                     <span class="font-label-md text-label-md">Logout</span>
                 </button>
             </form>
@@ -131,27 +138,27 @@
             </div>
             <nav class="flex-1 flex flex-col gap-1 overflow-y-auto">
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('dashboard') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('dashboard') }}">
-                    <span class="material-symbols-outlined {{ request()->routeIs('dashboard') ? 'icon-filled' : '' }}">dashboard</span>
+                    <i data-lucide="layout-dashboard"></i>
                     <span class="font-label-md text-label-md">Dashboard</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('pelanggan.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('pelanggan.index') }}">
-                    <span class="material-symbols-outlined {{ request()->routeIs('pelanggan.*') ? 'icon-filled' : '' }}">group</span>
+                    <i data-lucide="users"></i>
                     <span class="font-label-md text-label-md">Pelanggan</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('produk.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('produk.index') }}">
-                    <span class="material-symbols-outlined {{ request()->routeIs('produk.*') ? 'icon-filled' : '' }}">inventory_2</span>
+                    <i data-lucide="package"></i>
                     <span class="font-label-md text-label-md">Produk</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('transaksi.index') }}">
-                    <span class="material-symbols-outlined {{ request()->routeIs('transaksi.*') ? 'icon-filled' : '' }}">receipt_long</span>
+                    <i data-lucide="receipt"></i>
                     <span class="font-label-md text-label-md">Transaksi</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('jadwal-rutin.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('jadwal-rutin.index') }}">
-                    <span class="material-symbols-outlined {{ request()->routeIs('jadwal-rutin.*') ? 'icon-filled' : '' }}">calendar_today</span>
+                    <i data-lucide="calendar"></i>
                     <span class="font-label-md text-label-md">Jadwal Rutin</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('laporan.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('laporan.index') }}">
-                    <span class="material-symbols-outlined {{ request()->routeIs('laporan.*') ? 'icon-filled' : '' }}">analytics</span>
+                    <i data-lucide="bar-chart-3"></i>
                     <span class="font-label-md text-label-md">Laporan</span>
                 </a>
             </nav>
@@ -163,12 +170,12 @@
         <!-- TopNavBar -->
         <header class="sticky top-0 z-40 flex justify-between items-center px-margin-desktop h-16 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
             <div class="flex items-center gap-4 lg:hidden">
-                <span class="material-symbols-outlined text-primary cursor-pointer" @click="mobileMenuOpen = true">menu</span>
+                <i data-lucide="menu" class="text-primary cursor-pointer" @click="mobileMenuOpen = true"></i>
                 <span class="font-headline-sm text-headline-sm font-bold text-primary">Depot Barokah Tirta</span>
             </div>
             <div class="hidden lg:flex items-center w-96">
                 <form action="{{ route('pelanggan.index') }}" method="GET" class="w-full relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant"></i>
                     <input name="search" value="{{ request('search') }}" class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant/30 rounded-full focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-md text-body-md text-on-surface transition-colors" placeholder="Cari pelanggan..." type="text"/>
                 </form>
             </div>
@@ -189,45 +196,96 @@
                 </div>
 
                 <!-- Notification Dropdown -->
-                <div class="relative" x-data="{ open: false }">
+                <div class="relative" x-data="{ open: false, tab: 'hari-ini' }">
                     <button @click="open = !open" 
                             class="relative p-2 rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-200">
-                        <span class="material-symbols-outlined" :class="open ? 'icon-filled' : ''">notifications</span>
-                        @if(isset($jadwalHariIniGlobal) && $jadwalHariIniGlobal->count() > 0)
+                        <i data-lucide="bell" :class="open ? 'fill-current' : ''"></i>
+                        @php
+                            $totalNotif = ($jadwalHariIniGlobal ?? collect())->count() + ($jadwalBesokGlobal ?? collect())->count();
+                        @endphp
+                        @if($totalNotif > 0)
                             <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
                         @endif
                     </button>
                     
                     <div x-show="open" @click.away="open = false" x-transition
-                         class="absolute right-0 mt-2 w-[320px] bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-xl z-50 overflow-hidden">
-                        <div class="p-4 border-b border-outline-variant/30 bg-surface-container-low/50">
-                            <h3 class="font-label-md text-label-md font-bold text-on-surface uppercase">Jadwal Pengiriman Hari Ini</h3>
+                         class="absolute right-0 mt-2 w-[340px] bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-xl z-50 overflow-hidden flex flex-col">
+                        
+                        <!-- Tabs Header -->
+                        <div class="flex border-b border-outline-variant/30 bg-surface-container-low/50">
+                            <button @click="tab = 'hari-ini'" 
+                                    :class="tab === 'hari-ini' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant'"
+                                    class="flex-1 py-3 px-2 font-label-sm text-label-sm font-bold uppercase border-b-2 transition-colors">
+                                Hari Ini ({{ ($jadwalHariIniGlobal ?? collect())->count() }})
+                            </button>
+                            <button @click="tab = 'besok'" 
+                                    :class="tab === 'besok' ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant'"
+                                    class="flex-1 py-3 px-2 font-label-sm text-label-sm font-bold uppercase border-b-2 transition-colors">
+                                Besok ({{ ($jadwalBesokGlobal ?? collect())->count() }})
+                            </button>
                         </div>
+
+                        <!-- Content -->
                         <div class="max-h-[400px] overflow-y-auto">
-                            @if(isset($jadwalHariIniGlobal) && $jadwalHariIniGlobal->count() > 0)
-                                @foreach($jadwalHariIniGlobal as $jdwl)
-                                    <div class="p-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold text-xs">
-                                                {{ substr($jdwl->pelanggan->nama, 0, 1) }}
+                            <!-- Hari Ini Tab Content -->
+                            <template x-if="tab === 'hari-ini'">
+                                <div>
+                                    @if(isset($jadwalHariIniGlobal) && $jadwalHariIniGlobal->count() > 0)
+                                        @foreach($jadwalHariIniGlobal as $jdwl)
+                                            <div class="p-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold text-xs">
+                                                        {{ substr($jdwl->pelanggan->nama, 0, 1) }}
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $jdwl->pelanggan->nama }}</p>
+                                                        <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $jdwl->alamat_pengiriman ?? $jdwl->pelanggan->alamat }}</p>
+                                                    </div>
+                                                    <a href="{{ route('transaksi.create', ['pelanggan_id' => $jdwl->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" 
+                                                       class="p-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-on-primary transition-colors">
+                                                        <i data-lucide="shopping-cart"></i>
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div class="flex-1">
-                                                <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $jdwl->pelanggan->nama }}</p>
-                                                <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $jdwl->alamat_pengiriman ?? $jdwl->pelanggan->alamat }}</p>
-                                            </div>
-                                            <a href="{{ route('transaksi.create', ['pelanggan_id' => $jdwl->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" 
-                                               class="p-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-on-primary transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-                                            </a>
+                                        @endforeach
+                                    @else
+                                        <div class="p-8 text-center text-on-surface-variant opacity-50 flex flex-col items-center gap-2">
+                                            <i data-lucide="calendar-check-2" class="w-10 h-10"></i>
+                                            <p class="font-body-md">Tidak ada jadwal pengiriman hari ini.</p>
                                         </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="p-8 text-center text-on-surface-variant opacity-50 flex flex-col items-center gap-2">
-                                    <span class="material-symbols-outlined text-4xl">calendar_today</span>
-                                    <p class="font-body-md">Tidak ada jadwal pengiriman hari ini.</p>
+                                    @endif
                                 </div>
-                            @endif
+                            </template>
+
+                            <!-- Besok Tab Content -->
+                            <template x-if="tab === 'besok'">
+                                <div>
+                                    @if(isset($jadwalBesokGlobal) && $jadwalBesokGlobal->count() > 0)
+                                        @foreach($jadwalBesokGlobal as $jdwl)
+                                            <div class="p-4 border-b border-outline-variant/10 hover:bg-surface-container-low transition-colors">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary font-bold text-xs">
+                                                        {{ substr($jdwl->pelanggan->nama, 0, 1) }}
+                                                    </div>
+                                                    <div class="flex-1">
+                                                        <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $jdwl->pelanggan->nama }}</p>
+                                                        <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $jdwl->alamat_pengiriman ?? $jdwl->pelanggan->alamat }}</p>
+                                                    </div>
+                                                    <a href="{{ route('transaksi.create', ['pelanggan_id' => $jdwl->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" 
+                                                       class="p-1.5 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-container transition-colors">
+                                                        <i data-lucide="shopping-cart"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="p-8 text-center text-on-surface-variant opacity-50 flex flex-col items-center gap-2">
+                                            <i data-lucide="calendar-range" class="w-10 h-10"></i>
+                                            <p class="font-body-md">Tidak ada jadwal pengiriman untuk besok.</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </template>
                         </div>
                         <a href="{{ route('jadwal-rutin.index') }}" class="block p-3 text-center font-label-md text-label-md text-primary bg-surface-container-low hover:bg-surface-container transition-colors">
                             Lihat Semua Jadwal

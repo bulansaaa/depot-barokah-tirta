@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Record Transaction')
+@section('title', 'Catat Transaksi')
 
 @section('content')
 <div class="mb-8">
-    <h2 class="font-headline-lg text-headline-lg text-on-surface">Record Transaction</h2>
-    <p class="font-body-md text-body-md text-on-surface-variant mt-2">Enter details for a new water refill sale or delivery.</p>
+    <h2 class="font-headline-lg text-headline-lg text-on-surface">Catat Transaksi</h2>
+    <p class="font-body-md text-body-md text-on-surface-variant mt-2">Masukkan detail untuk penjualan isi ulang atau pengantaran air baru.</p>
 </div>
 
 @if ($errors->any())
@@ -28,10 +28,10 @@
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-gutter shadow-sm">
                 <h3 class="font-headline-sm text-headline-sm text-on-surface mb-6 flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">person</span>
-                    Customer Information
+                    Informasi Pelanggan
                 </h3>
                 <div class="flex flex-col gap-2">
-                    <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Select Customer</label>
+                    <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Pilih Pelanggan</label>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
                         <select name="pelanggan_id" id="pelangganId" onchange="updateCustomerDetails()"
@@ -47,7 +47,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <p class="font-label-sm text-label-sm text-outline mt-1">Leave blank for walk-in guest customers.</p>
+                    <p class="font-label-sm text-label-sm text-outline mt-1">Kosongkan jika pelanggan umum (bukan pelanggan tetap).</p>
                 </div>
             </div>
 
@@ -55,16 +55,16 @@
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-gutter shadow-sm">
                 <h3 class="font-headline-sm text-headline-sm text-on-surface mb-6 flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary">local_shipping</span>
-                    Order Details
+                    Detail Pesanan
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Transaction Type -->
                     <div>
-                        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">Transaction Type</label>
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">Tipe Transaksi</label>
                         <div class="flex flex-col gap-3">
                             <label class="flex items-center p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/20">
                                 <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="langsung" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi', request('tipe_transaksi', 'langsung')) == 'langsung' ? 'checked' : '' }}/>
-                                <span class="ml-3 font-body-md text-body-md text-on-surface">Langsung (Walk-in)</span>
+                                <span class="ml-3 font-body-md text-body-md text-on-surface">Langsung (Di Tempat)</span>
                             </label>
                             <label class="flex items-center p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/20">
                                 <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="tipe_transaksi" type="radio" value="antar" onchange="toggleDeliveryFields()" {{ old('tipe_transaksi', request('tipe_transaksi')) == 'antar' ? 'checked' : '' }}/>
@@ -74,7 +74,7 @@
                     </div>
                     <!-- Ordering Method -->
                     <div>
-                        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">Ordering Method</label>
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">Metode Pemesanan</label>
                         <div class="flex flex-col gap-3">
                             <label class="flex items-center p-3 border border-outline-variant rounded-lg cursor-pointer hover:bg-surface-container-low transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary-fixed/20">
                                 <input class="w-4 h-4 text-primary border-outline-variant focus:ring-primary" name="metode_pemesanan" type="radio" value="whatsapp" {{ old('metode_pemesanan', 'whatsapp') == 'whatsapp' ? 'checked' : '' }}/>
@@ -104,8 +104,8 @@
                                    class="w-full p-3 bg-surface-bright border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="0812...">
                         </div>
                         <div class="col-span-1">
-                            <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">Delivery Address</label>
-                            <textarea name="alamat_pengiriman" id="alamatPengiriman" class="w-full p-3 bg-surface-bright border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Enter complete delivery address..." rows="1">{{ old('alamat_pengiriman') }}</textarea>
+                            <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">Alamat Pengiriman</label>
+                            <textarea name="alamat_pengiriman" id="alamatPengiriman" class="w-full p-3 bg-surface-bright border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors" placeholder="Masukkan alamat pengiriman lengkap..." rows="1">{{ old('alamat_pengiriman') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -123,10 +123,10 @@
                 <div class="p-gutter border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-low/50">
                     <h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">inventory_2</span>
-                        Products
+                        Produk
                     </h3>
                     <button type="button" onclick="tambahBarisProduk()" class="font-label-md text-label-md text-primary flex items-center gap-1 hover:underline">
-                        <span class="material-symbols-outlined text-[18px]">add</span> Add Item
+                        <span class="material-symbols-outlined text-[18px]">add</span> Tambah Barang
                     </button>
                 </div>
                 <div id="produkContainer" class="p-0">
@@ -172,7 +172,7 @@
                                 <div class="w-24 text-right shrink-0">
                                     <p class="font-body-md text-body-md font-semibold text-on-surface subtotal">Rp 0</p>
                                 </div>
-                                <button type="button" onclick="hapusBaris(this)" class="text-error hover:bg-error-container p-1 rounded-md transition-colors" title="Remove item">
+                                <button type="button" onclick="hapusBaris(this)" class="text-error hover:bg-error-container p-1 rounded-md transition-colors" title="Hapus item">
                                     <span class="material-symbols-outlined text-[20px]">delete</span>
                                 </button>
                             </div>
@@ -187,7 +187,7 @@
             <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-gutter shadow-sm relative overflow-hidden">
                 <!-- Decorative top accent -->
                 <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-6">Order Summary</h3>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-6">Ringkasan Pesanan</h3>
                 <div class="flex flex-col gap-3 mb-6">
                     <div class="flex justify-between items-center">
                         <span class="font-body-md text-body-md text-on-surface-variant">Subtotal</span>

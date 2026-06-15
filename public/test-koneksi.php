@@ -1,0 +1,1 @@
+<?php echo "<h1>KONEKSI BERHASIL</h1><p>Jika Anda melihat ini, berarti folder yang saya edit adalah folder yang sama dengan yang Anda buka di browser.</p>"; ?>

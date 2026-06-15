@@ -34,7 +34,7 @@
                 </div>
                 <div>
                     <p class="text-gray-400">Tanggal</p>
-                    <p class="font-medium text-gray-800">{{ $transaksi->tanggal_transaksi->format('d M Y H:i') }}</p>
+                    <p class="font-medium text-gray-800">{{ $transaksi->tanggal_transaksi->translatedFormat('d M Y H:i') }}</p>
                 </div>
                 <div>
                     <p class="text-gray-400">Pelanggan</p>
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <p class="text-gray-400">Tipe</p>
-                    <p class="font-medium text-gray-800 capitalize">{{ $transaksi->tipe_transaksi }}</p>
+                    <p class="font-medium text-gray-800 capitalize">{{ $transaksi->tipe_transaksi === 'langsung' ? 'Langsung' : 'Antar' }}</p>
                 </div>
                 <div>
                     <p class="text-gray-400">Metode</p>
@@ -119,9 +119,17 @@
                         'selesai'    => 'bg-[#d1fae5] text-[#065f46]',
                         'dibatalkan' => 'bg-red-100 text-red-700',
                     ][$transaksi->status_transaksi] ?? 'bg-gray-100 text-gray-600';
+
+                    $stLabel = [
+                        'pending'    => 'Pending',
+                        'diproses'   => 'Diproses',
+                        'diantar'    => 'Diantar',
+                        'selesai'    => 'Selesai',
+                        'dibatalkan' => 'Dibatalkan',
+                    ][$transaksi->status_transaksi] ?? ucfirst($transaksi->status_transaksi);
                 @endphp
                 <span class="text-sm px-3 py-1 rounded-full font-medium {{ $stColor }}">
-                    {{ ucfirst($transaksi->status_transaksi) }}
+                    {{ $stLabel }}
                 </span>
             </div>
 
@@ -147,9 +155,18 @@
                     <label class="block text-xs text-gray-500 mb-1">Ubah Status</label>
                     <select name="status_transaksi"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        @foreach(['pending','diproses','diantar','selesai','dibatalkan'] as $s)
-                            <option value="{{ $s }}" {{ $transaksi->status_transaksi === $s ? 'selected' : '' }}>
-                                {{ ucfirst($s) }}
+                        @php
+                            $stOptions = [
+                                'pending'    => 'Pending',
+                                'diproses'   => 'Diproses',
+                                'diantar'    => 'Diantar',
+                                'selesai'    => 'Selesai',
+                                'dibatalkan' => 'Dibatalkan',
+                            ];
+                        @endphp
+                        @foreach($stOptions as $val => $label)
+                            <option value="{{ $val }}" {{ $transaksi->status_transaksi === $val ? 'selected' : '' }}>
+                                {{ $label }}
                             </option>
                         @endforeach
                     </select>

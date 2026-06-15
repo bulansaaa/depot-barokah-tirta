@@ -9,53 +9,90 @@
         <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola pengiriman air rutin mingguan untuk pelanggan tetap.</p>
     </div>
     <a href="{{ route('jadwal-rutin.create') }}" class="bg-primary text-on-primary hover:bg-primary/90 active:scale-95 transition-all duration-200 px-6 py-3 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
-        <span class="material-symbols-outlined text-[20px]">add</span>
+        <i data-lucide="plus" class="w-5 h-5"></i>
         Tambah Jadwal
     </a>
 </div>
 
-{{-- Jadwal Hari Ini Section --}}
-@if($jadwalHariIni->isNotEmpty())
-<section class="mb-8">
-    <div class="flex items-center gap-2 mb-4">
-        <span class="material-symbols-outlined text-primary">local_shipping</span>
-        <h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Pengantaran Hari Ini ({{ $hariIni }})</h3>
-        <span class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full ml-2">{{ $jadwalHariIni->count() }} Pelanggan</span>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-gutter">
-        @foreach($jadwalHariIni as $j)
-        <div class="bg-surface-container-lowest border {{ $j->terkirim_hari_ini ? 'border-secondary/30 bg-secondary/5' : 'border-primary/20' }} rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow relative overflow-hidden">
-            @if($j->terkirim_hari_ini)
-                <div class="absolute top-0 right-0 p-1 bg-secondary text-on-secondary rounded-bl-lg">
-                    <span class="material-symbols-outlined text-[16px]">check</span>
-                </div>
-            @endif
-            <div class="w-10 h-10 {{ $j->terkirim_hari_ini ? 'bg-secondary/20 text-secondary' : 'bg-primary-container/20 text-primary' }} rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined">person</span>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="font-body-md text-body-md font-semibold text-on-surface {{ $j->terkirim_hari_ini ? 'line-through opacity-60' : '' }}">{{ $j->pelanggan->nama }}</p>
-                <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $j->alamat_pengiriman ?? $j->pelanggan->alamat }}</p>
-                <div class="flex items-center gap-2 mt-2">
-                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant">phone</span>
-                    <span class="font-label-sm text-label-sm text-on-surface-variant">{{ $j->pelanggan->no_hp ?? '-' }}</span>
-                </div>
-            </div>
-            @if(!$j->terkirim_hari_ini)
-            <a href="{{ route('transaksi.create', ['pelanggan_id' => $j->pelanggan_id, 'tipe_transaksi' => 'antar']) }}"
-               class="bg-primary text-on-primary p-2 rounded-lg hover:bg-surface-tint transition-colors flex-shrink-0" title="Buat Transaksi">
-                <span class="material-symbols-outlined">add_shopping_cart</span>
-            </a>
-            @else
-            <div class="text-secondary p-2 flex-shrink-0" title="Sudah Terkirim">
-                <span class="material-symbols-outlined icon-filled">check_circle</span>
-            </div>
-            @endif
+{{-- Jadwal Hari Ini & Esok Hari Side-by-Side --}}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    {{-- Jadwal Hari Ini Section --}}
+    @if($jadwalHariIni->isNotEmpty())
+    <section>
+        <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="truck" class="text-primary w-5 h-5"></i>
+            <h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Hari Ini ({{ $hariIni }})</h3>
+            <span class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full ml-auto md:ml-2">{{ $jadwalHariIni->count() }}</span>
         </div>
-        @endforeach
-    </div>
-</section>
-@endif
+        <div class="flex flex-col gap-3">
+            @foreach($jadwalHariIni as $j)
+            <div class="bg-surface-container-lowest border {{ $j->terkirim_hari_ini ? 'border-secondary/30 bg-secondary/5' : 'border-primary/20' }} rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow relative overflow-hidden">
+                @if($j->terkirim_hari_ini)
+                    <div class="absolute top-0 right-0 p-1 bg-secondary text-on-secondary rounded-bl-lg">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                    </div>
+                @endif
+                <div class="w-10 h-10 {{ $j->terkirim_hari_ini ? 'bg-secondary/20 text-secondary' : 'bg-primary-container/20 text-primary' }} rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-body-md text-body-md font-semibold text-on-surface {{ $j->terkirim_hari_ini ? 'line-through opacity-60' : '' }}">{{ $j->pelanggan->nama }}</p>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $j->alamat_pengiriman ?? $j->pelanggan->alamat }}</p>
+                </div>
+                @if(!$j->terkirim_hari_ini)
+                <a href="{{ route('transaksi.create', ['pelanggan_id' => $j->pelanggan_id, 'tipe_transaksi' => 'antar']) }}"
+                   class="bg-primary text-on-primary p-2 rounded-lg hover:bg-surface-tint transition-colors flex-shrink-0" title="Buat Transaksi">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                </a>
+                @else
+                <div class="text-secondary p-2 flex-shrink-0" title="Sudah Terkirim">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @else
+    <section class="opacity-40 grayscale flex flex-col items-center justify-center border-2 border-dashed border-outline-variant rounded-2xl p-8 h-full min-h-[120px]">
+        <i data-lucide="calendar-x" class="w-10 h-10 mb-2"></i>
+        <p class="font-label-md">Tidak ada jadwal hari ini</p>
+    </section>
+    @endif
+
+    {{-- Jadwal Esok Hari Section --}}
+    @if($jadwalBesok->isNotEmpty())
+    <section>
+        <div class="flex items-center gap-2 mb-4">
+            <i data-lucide="calendar-days" class="text-secondary w-5 h-5"></i>
+            <h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Besok ({{ $hariBesok }})</h3>
+            <span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full ml-auto md:ml-2">{{ $jadwalBesok->count() }}</span>
+        </div>
+        <div class="flex flex-col gap-3">
+            @foreach($jadwalBesok as $j)
+            <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-4 shadow-sm flex items-start gap-4 hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="w-10 h-10 bg-secondary-container/20 text-secondary rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-body-md text-body-md font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
+                    <p class="font-label-sm text-label-sm text-on-surface-variant truncate">{{ $j->alamat_pengiriman ?? $j->pelanggan->alamat }}</p>
+                </div>
+                <a href="{{ route('transaksi.create', ['pelanggan_id' => $j->pelanggan_id, 'tipe_transaksi' => 'antar']) }}"
+                   class="border border-outline-variant text-on-surface-variant hover:bg-surface-container-high p-2 rounded-lg transition-colors flex-shrink-0" title="Proses Lebih Awal">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                </a>
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @else
+    <section class="opacity-40 grayscale flex flex-col items-center justify-center border-2 border-dashed border-outline-variant rounded-2xl p-8 h-full min-h-[120px]">
+        <i data-lucide="calendar-x" class="w-10 h-10 mb-2"></i>
+        <p class="font-label-md">Tidak ada jadwal untuk besok</p>
+    </section>
+    @endif
+</div>
 
 <!-- Filters & List -->
 <div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-sm overflow-hidden">
@@ -76,7 +113,7 @@
             <button type="submit" class="bg-surface-container-highest text-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-surface-container transition-colors">Filter</button>
             @if(request()->hasAny(['hari','status']))
                 <a href="{{ route('jadwal-rutin.index') }}" class="flex items-center text-on-surface-variant hover:text-primary transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </a>
             @endif
         </form>
@@ -101,7 +138,7 @@
                         <div class="flex items-center gap-2">
                             <p class="font-semibold text-on-surface">{{ $j->pelanggan->nama }}</p>
                             @if($j->terkirim_hari_ini)
-                                <span class="material-symbols-outlined text-secondary text-[18px] icon-filled" title="Terkirim Hari Ini">check_circle</span>
+                                <i data-lucide="check-circle-2" class="text-secondary w-4 h-4 fill-current" title="Terkirim Hari Ini"></i>
                             @endif
                         </div>
                         <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $j->pelanggan->no_hp }}</p>
@@ -125,18 +162,18 @@
                     <td class="px-6 py-4 text-right">
                         <div class="flex justify-end gap-2 text-on-surface-variant">
                             <a href="{{ route('jadwal-rutin.edit', $j) }}" class="hover:text-primary transition-colors p-1" title="Edit">
-                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                                <i data-lucide="edit-3" class="w-5 h-5"></i>
                             </a>
                             <form method="POST" action="{{ route('jadwal-rutin.toggle', $j) }}" class="inline">
                                 @csrf @method('PATCH')
                                 <button class="hover:text-primary transition-colors p-1" title="{{ $j->status_aktif ? 'Nonaktifkan' : 'Aktifkan' }}">
-                                    <span class="material-symbols-outlined text-[20px]">{{ $j->status_aktif ? 'toggle_on' : 'toggle_off' }}</span>
+                                    <i data-lucide="{{ $j->status_aktif ? 'toggle-right' : 'toggle-left' }}" class="w-6 h-6"></i>
                                 </button>
                             </form>
                             <form method="POST" action="{{ route('jadwal-rutin.destroy', $j) }}" class="inline" onsubmit="return confirm('Hapus jadwal ini?')">
                                 @csrf @method('DELETE')
                                 <button class="hover:text-error transition-colors p-1" title="Hapus">
-                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
                                 </button>
                             </form>
                         </div>

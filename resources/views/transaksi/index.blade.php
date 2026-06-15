@@ -85,11 +85,11 @@
                     <td class="px-6 py-4 font-mono text-xs text-on-surface-variant">#{{ $trx->kode_transaksi }}</td>
                     <td class="px-6 py-4">
                         <p class="font-semibold text-on-surface">{{ $trx->pelanggan->nama ?? 'Umum' }}</p>
-                        <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $trx->tanggal_transaksi->format('d M Y, H:i') }}</p>
+                        <p class="font-label-sm text-label-sm text-on-surface-variant">{{ $trx->tanggal_transaksi->translatedFormat('d M Y, H:i') }}</p>
                     </td>
                     <td class="px-6 py-4">
                         <span class="font-label-sm text-label-sm font-bold uppercase {{ $trx->tipe_transaksi === 'antar' ? 'text-primary' : 'text-on-surface-variant' }}">
-                            {{ $trx->tipe_transaksi }}
+                            {{ $trx->tipe_transaksi === 'langsung' ? 'Langsung' : 'Antar' }}
                         </span>
                     </td>
                     <td class="px-6 py-4 font-semibold text-on-surface">
@@ -102,9 +102,14 @@
                                     'selesai'    => 'bg-[#d1fae5] text-[#065f46]',
                                     'dibatalkan' => 'bg-error-container/30 text-error',
                                 ][$trx->status_transaksi];
+                                
+                                $statusLabels = [
+                                    'selesai'    => 'Selesai',
+                                    'dibatalkan' => 'Dibatalkan',
+                                ];
                             @endphp
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full font-label-sm text-label-sm font-bold uppercase {{ $statusClasses }}">
-                                {{ $trx->status_transaksi }}
+                                {{ $statusLabels[$trx->status_transaksi] }}
                             </span>
                         @else
                             <form method="POST" action="{{ route('transaksi.status.update', $trx) }}" class="inline-block">
@@ -139,9 +144,18 @@
                                     {{ $trx->status_transaksi === 'pending' ? 'text-tertiary' : '' }}
                                     {{ $trx->status_transaksi === 'diproses' ? 'text-primary' : '' }}
                                     {{ $trx->status_transaksi === 'diantar' ? 'text-on-secondary-fixed-variant' : '' }}">
-                                    @foreach(['pending','diproses','diantar','selesai','dibatalkan'] as $s)
-                                        <option value="{{ $s }}" {{ $trx->status_transaksi === $s ? 'selected' : '' }}>
-                                            {{ ucfirst($s) }}
+                                    @php
+                                        $allStatuses = [
+                                            'pending'    => 'Pending',
+                                            'diproses'   => 'Diproses',
+                                            'diantar'    => 'Diantar',
+                                            'selesai'    => 'Selesai',
+                                            'dibatalkan' => 'Dibatalkan',
+                                        ];
+                                    @endphp
+                                    @foreach($allStatuses as $val => $label)
+                                        <option value="{{ $val }}" {{ $trx->status_transaksi === $val ? 'selected' : '' }}>
+                                            {{ $label }}
                                         </option>
                                     @endforeach
                                 </select>

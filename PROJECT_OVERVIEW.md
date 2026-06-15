@@ -12,20 +12,52 @@
 ## Modul & Fitur Utama
 
 ### 1. Dashboard (Pusat Kendali)
+- **Controller:** `app/Http/Controllers/DashboardController.php`
+- **Models:** 
+  - `app/Models/Transaksi.php`
+  - `app/Models/Pelanggan.php`
+  - `app/Models/JadwalRutin.php`
+- **Views:** `resources/views/dashboard.blade.php`
 - **Statistik Cepat:** Menampilkan total transaksi hari ini, pendapatan harian & bulanan, serta jumlah pelanggan.
 - **Monitoring Status:** Widget untuk melihat jumlah transaksi yang sedang `pending` atau `diproses`.
 - **Jadwal Hari Ini:** List pelanggan yang memiliki jadwal pengiriman rutin pada hari tersebut dengan akses cepat untuk membuat transaksi.
 - **Transaksi Terbaru:** Tabel ringkasan transaksi terakhir yang masuk.
 
 ### 2. Manajemen Pelanggan (Pelanggan)
+- **Controller:** `app/Http/Controllers/PelangganController.php`
+- **Models:** 
+  - `app/Models/Pelanggan.php`
+  - `app/Models/Transaksi.php`
+- **Views:** 
+  - `resources/views/pelanggan/index.blade.php` (Daftar pelanggan)
+  - `resources/views/pelanggan/create.blade.php` (Tambah)
+  - `resources/views/pelanggan/edit.blade.php` (Edit)
+  - `resources/views/pelanggan/show.blade.php` (Riwayat & Detail)
 - **Database Pelanggan:** Nama, No. HP, Alamat Lengkap, dan Catatan.
 - **Riwayat:** Melihat histori transaksi dari masing-masing pelanggan.
 
 ### 3. Manajemen Produk (Produk)
+- **Controller:** `app/Http/Controllers/ProdukController.php`
+- **Models:** `app/Models/Produk.php`
+- **Views:** 
+  - `resources/views/produk/index.blade.php`
+  - `resources/views/produk/create.blade.php`
+  - `resources/views/produk/edit.blade.php`
 - **Katalog Produk:** Nama produk (misal: Air Galon, Tutup Galon, Tisu), Harga, dan Satuan.
 - **Status:** Kontrol untuk mengaktifkan/menonaktifkan produk.
 
 ### 4. Sistem Transaksi (Transaksi)
+- **Controller:** `app/Http/Controllers/TransaksiController.php`
+- **Models:** 
+  - `app/Models/Transaksi.php`
+  - `app/Models/TransaksiDetail.php`
+  - `app/Models/Pelanggan.php`
+  - `app/Models/Produk.php`
+- **Views:** 
+  - `resources/views/transaksi/index.blade.php`
+  - `resources/views/transaksi/create.blade.php`
+  - `resources/views/transaksi/show.blade.php`
+  - `resources/views/transaksi/nota.blade.php` (Nota HTML)
 - **Pencatatan Penjualan:** 
   - **Tipe Transaksi:** Langsung (beli di tempat) dan Antar (dikirim ke alamat).
   - **Metode Pemesanan:** WA, Telepon, atau Datang Langsung.
@@ -34,21 +66,38 @@
 - **Cetak Nota:** Fitur cetak nota dalam format web maupun PDF.
 
 ### 5. Penjadwalan Rutin (Jadwal Rutin)
+- **Controller:** `app/Http/Controllers/JadwalRutinController.php`
+- **Models:** 
+  - `app/Models/JadwalRutin.php`
+  - `app/Models/Pelanggan.php`
+- **Views:** 
+  - `resources/views/jadwal-rutin/index.blade.php`
+  - `resources/views/jadwal-rutin/create.blade.php`
+  - `resources/views/jadwal-rutin/edit.blade.php`
 - **Pengiriman Terjadwal:** Mengatur hari apa saja seorang pelanggan rutin memesan air (misal: setiap Senin dan Kamis).
 - **Automasi Dashboard:** Jadwal ini akan otomatis muncul di dashboard sesuai hari berjalan.
 
 ### 6. Laporan (Reporting)
+- **Controller:** `app/Http/Controllers/LaporanController.php`
+- **Models:** `app/Models/Transaksi.php`
+- **Views:** 
+  - `resources/views/laporan/index.blade.php`
+  - `resources/views/laporan/harian.blade.php`
+  - `resources/views/laporan/bulanan.blade.php`
+  - `resources/views/laporan/pdf-harian.blade.php` (Template PDF)
+  - `resources/views/laporan/pdf-bulanan.blade.php` (Template PDF)
+  - `resources/views/laporan/nota-pdf.blade.php` (Template PDF Nota)
 - **Laporan Harian:** Rincian transaksi dan total pendapatan per hari.
 - **Laporan Bulanan:** Rekapitulasi performa penjualan per bulan.
 - **Ekspor PDF:** Semua laporan dapat diunduh dalam format PDF untuk keperluan arsip.
 
 ## Struktur Data (Model Utama)
-- **User:** Admin sistem.
-- **Pelanggan:** Data pembeli.
-- **Produk:** Katalog barang/jasa.
-- **Transaksi:** Data utama penjualan (Header).
-- **TransaksiDetail:** Rincian item yang dibeli dalam satu transaksi.
-- **JadwalRutin:** Pengaturan pengiriman berulang untuk pelanggan.
+- **User:** Admin sistem (`app/Models/User.php`)
+- **Pelanggan:** Data pembeli (`app/Models/Pelanggan.php`)
+- **Produk:** Katalog barang/jasa (`app/Models/Produk.php`)
+- **Transaksi:** Data utama penjualan/Header (`app/Models/Transaksi.php`)
+- **TransaksiDetail:** Rincian item per transaksi (`app/Models/TransaksiDetail.php`)
+- **JadwalRutin:** Pengaturan pengiriman berulang (`app/Models/JadwalRutin.php`)
 
 ## Arahan UI/UX (Untuk Prompt UI)
 - **Tema:** Bersih, profesional, dan modern dengan dominasi warna biru (melambangkan air/kepercayaan) dan hijau (pertumbuhan/keuangan).

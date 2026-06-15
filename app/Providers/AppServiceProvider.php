@@ -24,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
     {
         View::composer('layouts.app', function ($view) {
             $hariIni = Carbon::now()->locale('id')->isoFormat('dddd');
+            $hariBesok = Carbon::tomorrow()->locale('id')->isoFormat('dddd');
+
             $jadwalHariIniGlobal = JadwalRutin::with('pelanggan')
                 ->aktif()
                 ->hari($hariIni)
@@ -31,8 +33,16 @@ class AppServiceProvider extends ServiceProvider
                     $query->whereDate('tanggal_transaksi', Carbon::today());
                 })
                 ->get();
+
+            $jadwalBesokGlobal = JadwalRutin::with('pelanggan')
+                ->aktif()
+                ->hari($hariBesok)
+                ->get();
             
-            $view->with('jadwalHariIniGlobal', $jadwalHariIniGlobal);
+            $view->with([
+                'jadwalHariIniGlobal' => $jadwalHariIniGlobal,
+                'jadwalBesokGlobal' => $jadwalBesokGlobal
+            ]);
         });
     }
 }

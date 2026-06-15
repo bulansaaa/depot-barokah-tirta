@@ -8,7 +8,7 @@
         <p class="font-body-md text-body-md text-on-surface-variant">Ringkasan operasional Depot Barokah Tirta hari ini.</p>
     </div>
     <a href="{{ route('transaksi.create') }}" class="hidden md:flex items-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-tint transition-colors shadow-sm">
-        <span class="material-symbols-outlined text-[18px]">add</span>
+        <i data-lucide="plus" class="w-4 h-4"></i>
         Transaksi Baru
     </a>
 </div>
@@ -21,7 +21,7 @@
         <div class="flex justify-between items-start gap-2">
             <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Transaksi Hari Ini</span>
             <div class="p-2 bg-primary-container/30 rounded-lg text-primary shrink-0">
-                <span class="material-symbols-outlined">local_shipping</span>
+                <i data-lucide="truck" class="w-5 h-5"></i>
             </div>
         </div>
         <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">{{ $transaksiHariIni }}</div>
@@ -32,7 +32,7 @@
         <div class="flex justify-between items-start gap-2">
             <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Pendapatan Hari Ini</span>
             <div class="p-2 bg-secondary-container/30 rounded-lg text-secondary shrink-0">
-                <span class="material-symbols-outlined">payments</span>
+                <i data-lucide="banknote" class="w-5 h-5"></i>
             </div>
         </div>
         <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</div>
@@ -43,7 +43,7 @@
         <div class="flex justify-between items-start gap-2">
             <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Pendapatan Bulan Ini</span>
             <div class="p-2 bg-tertiary-container/30 rounded-lg text-tertiary shrink-0">
-                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <i data-lucide="wallet" class="w-5 h-5"></i>
             </div>
         </div>
         <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface truncate" title="Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}">
@@ -56,7 +56,7 @@
         <div class="flex justify-between items-start gap-2">
             <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Total Pelanggan</span>
             <div class="p-2 bg-primary-container/30 rounded-lg text-primary shrink-0">
-                <span class="material-symbols-outlined">group</span>
+                <i data-lucide="users" class="w-5 h-5"></i>
             </div>
         </div>
         <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">{{ $totalPelanggan }}</div>
@@ -72,63 +72,106 @@
             <!-- Pending -->
             <div class="bg-surface-container-lowest border border-tertiary-container rounded-xl p-6 shadow-sm flex items-center gap-4">
                 <div class="w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
-                    <span class="material-symbols-outlined icon-filled">hourglass_empty</span>
+                    <i data-lucide="clock" class="w-6 h-6"></i>
                 </div>
                 <div class="flex-1">
                     <div class="font-label-md text-label-md text-tertiary uppercase mb-1">Transaksi Pending</div>
                     <div class="font-headline-md text-headline-md text-on-surface">{{ $transaksiPending }} Pesanan</div>
                 </div>
                 <a href="{{ route('transaksi.index', ['status' => 'pending']) }}" class="text-tertiary hover:bg-tertiary-container/10 p-2 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">arrow_forward</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </a>
             </div>
             <!-- Dalam Proses -->
             <div class="bg-surface-container-lowest border border-primary-container rounded-xl p-6 shadow-sm flex items-center gap-4">
                 <div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined icon-filled">sync</span>
+                    <i data-lucide="refresh-cw" class="w-6 h-6"></i>
                 </div>
                 <div class="flex-1">
                     <div class="font-label-md text-label-md text-primary uppercase mb-1">Dalam Proses</div>
                     <div class="font-headline-md text-headline-md text-on-surface">{{ $transaksiDiproses }} Pengiriman</div>
                 </div>
                 <a href="{{ route('transaksi.index', ['status' => 'diproses']) }}" class="text-primary hover:bg-primary-container/10 p-2 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">arrow_forward</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Jadwal Hari Ini (col 4) -->
-    <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm flex flex-col h-[320px]">
-        <div class="p-6 border-b border-outline-variant/30 flex justify-between items-center">
-            <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Jadwal Hari Ini</h2>
-            <span class="bg-surface-container text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full">{{ $jadwalHariIni->count() }} Jadwal</span>
+    <!-- Jadwal Hari Ini & Besok (col 4) -->
+    <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm flex flex-col h-[380px]" x-data="{ tab: 'hari-ini' }">
+        <div class="p-4 border-b border-outline-variant/30 flex flex-col gap-4">
+            <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Jadwal Pengiriman</h2>
+            <div class="flex bg-surface-container-low p-1 rounded-lg">
+                <button @click="tab = 'hari-ini'" 
+                        :class="tab === 'hari-ini' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant'"
+                        class="flex-1 py-1.5 px-2 rounded-md font-label-md text-label-md transition-all">
+                    Hari Ini
+                </button>
+                <button @click="tab = 'besok'" 
+                        :class="tab === 'besok' ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant'"
+                        class="flex-1 py-1.5 px-2 rounded-md font-label-md text-label-md transition-all">
+                    Besok
+                </button>
+            </div>
         </div>
+
         <div class="flex-1 overflow-y-auto p-2">
-            @forelse($jadwalHariIni as $jadwal)
-                <div class="flex justify-between items-center p-4 hover:bg-surface-container-low rounded-lg transition-colors border-b border-outline-variant/10 last:border-0">
-                    <div class="flex gap-3 items-center">
-                        <div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary font-label-md">
-                            {{ substr($jadwal->pelanggan->nama, 0, 1) }}
-                        </div>
-                        <div>
-                            <div class="font-body-md text-body-md font-semibold text-on-surface">{{ $jadwal->pelanggan->nama }}</div>
-                            <div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
-                                <span class="material-symbols-outlined text-[14px]">location_on</span>
-                                {{ $jadwal->alamat_pengiriman ?? $jadwal->pelanggan->alamat }}
+            <!-- Hari Ini Tab -->
+            <div x-show="tab === 'hari-ini'" x-transition>
+                @forelse($jadwalHariIni as $jadwal)
+                    <div class="flex justify-between items-center p-4 hover:bg-surface-container-low rounded-lg transition-colors border-b border-outline-variant/10 last:border-0">
+                        <div class="flex gap-3 items-center min-w-0">
+                            <div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                                {{ substr($jadwal->pelanggan->nama, 0, 1) }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-body-md text-body-md font-semibold text-on-surface truncate">{{ $jadwal->pelanggan->nama }}</div>
+                                <div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-3 h-3"></i>
+                                    <span class="truncate">{{ $jadwal->alamat_pengiriman ?? $jadwal->pelanggan->alamat }}</span>
+                                </div>
                             </div>
                         </div>
+                        <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" class="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary p-2 rounded-lg transition-colors shrink-0" title="Buat Transaksi">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        </a>
                     </div>
-                    <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id]) }}" class="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary p-2 rounded-lg transition-colors" title="Buat Transaksi">
-                        <span class="material-symbols-outlined text-[18px]">add_shopping_cart</span>
-                    </a>
-                </div>
-            @empty
-                <div class="flex flex-col items-center justify-center h-full text-on-surface-variant opacity-50">
-                    <span class="material-symbols-outlined text-4xl mb-2">calendar_today</span>
-                    <p class="font-body-md">Tidak ada jadwal hari ini</p>
-                </div>
-            @endforelse
+                @empty
+                    <div class="flex flex-col items-center justify-center py-12 text-on-surface-variant opacity-50">
+                        <i data-lucide="calendar-check-2" class="w-10 h-10 mb-2"></i>
+                        <p class="font-body-md">Tidak ada jadwal hari ini</p>
+                    </div>
+                @endforelse
+            </div>
+
+            <!-- Besok Tab -->
+            <div x-show="tab === 'besok'" x-transition style="display: none;">
+                @forelse($jadwalBesok as $jadwal)
+                    <div class="flex justify-between items-center p-4 hover:bg-surface-container-low rounded-lg transition-colors border-b border-outline-variant/10 last:border-0">
+                        <div class="flex gap-3 items-center min-w-0">
+                            <div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary font-bold text-xs shrink-0">
+                                {{ substr($jadwal->pelanggan->nama, 0, 1) }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-body-md text-body-md font-semibold text-on-surface truncate">{{ $jadwal->pelanggan->nama }}</div>
+                                <div class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-3 h-3"></i>
+                                    <span class="truncate">{{ $jadwal->alamat_pengiriman ?? $jadwal->pelanggan->alamat }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" class="border border-outline-variant text-on-surface-variant hover:bg-surface-container-high p-2 rounded-lg transition-colors shrink-0" title="Proses Lebih Awal">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                @empty
+                    <div class="flex flex-col items-center justify-center py-12 text-on-surface-variant opacity-50">
+                        <i data-lucide="calendar-range" class="w-10 h-10 mb-2"></i>
+                        <p class="font-body-md">Tidak ada jadwal untuk besok</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
 </section>

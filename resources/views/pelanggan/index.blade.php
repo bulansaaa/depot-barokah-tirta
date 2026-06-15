@@ -61,7 +61,7 @@
                     <td class="p-4 font-body-md text-body-md text-on-surface-variant">{{ $p->no_hp ?? '-' }}</td>
                     <td class="p-4 font-body-md text-body-md text-on-surface-variant hidden md:table-cell max-w-xs truncate">{{ $p->alamat ?? '-' }}</td>
                     <td class="p-4 text-right">
-                        <div class="flex items-center justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div class="flex items-center justify-end gap-2">
                             <a href="{{ route('pelanggan.show', $p) }}" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded transition-colors" title="Lihat Riwayat">
                                 <span class="material-symbols-outlined text-[20px]">history</span>
                             </a>
