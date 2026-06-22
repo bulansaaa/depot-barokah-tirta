@@ -41,11 +41,18 @@
                 </p>
             </div>
         </div>
-        <div class="mt-4 pt-4 border-t">
+        <div class="mt-4 pt-4 border-t space-y-2">
             <a href="{{ route('pelanggan.edit', $pelanggan) }}"
                class="block text-center bg-yellow-400 text-white py-2 rounded-lg text-sm hover:bg-yellow-500">
                 Edit Data
             </a>
+            <form action="{{ route('pelanggan.destroy', $pelanggan) }}" method="POST" onsubmit="return confirm('Hapus pelanggan ini? Data transaksi akan tetap tersimpan.')">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full bg-red-500 text-white py-2 rounded-lg text-sm hover:bg-red-600">
+                    Hapus Pelanggan
+                </button>
+            </form>
         </div>
     </div>
 

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
+use App\Models\Pengeluaran;
+use App\Models\JadwalLog;
+use App\Models\JadwalRutin;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -32,11 +35,19 @@ class LaporanController extends Controller
             ->where('status_transaksi', 'selesai')
             ->count();
 
+        // Pengeluaran
+        $pengeluaranHariIni = Pengeluaran::whereDate('tanggal', $today)->sum('nominal');
+        $pengeluaranBulanIni = Pengeluaran::whereMonth('tanggal', $startOfMonth->month)
+            ->whereYear('tanggal', $startOfMonth->year)
+            ->sum('nominal');
+
         return view('laporan.index', compact(
             'pendapatanHariIni',
             'pendapatanBulanIni',
             'totalTransaksiHariIni',
-            'totalTransaksiBulanIni'
+            'totalTransaksiBulanIni',
+            'pengeluaranHariIni',
+            'pengeluaranBulanIni'
         ));
     }
 
@@ -89,11 +100,31 @@ class LaporanController extends Controller
         $totalPendapatan = $transaksi->sum('total_harga');
         $totalTransaksi  = $transaksi->count();
 
+        // Pengeluaran
+        $pengeluaran = Pengeluaran::whereMonth('tanggal', $bulan->month)
+            ->whereYear('tanggal', $bulan->year)
+            ->get();
+        $totalPengeluaran = $pengeluaran->sum('nominal');
+
+        // Laba Bersih
+        $labaBersih = $totalPendapatan - $totalPengeluaran;
+
+        // Ringkasan Jadwal (JadwalLog)
+        $logSummary = JadwalLog::whereMonth('tanggal', $bulan->month)
+            ->whereYear('tanggal', $bulan->year)
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
+
         return view('laporan.bulanan', compact(
             'transaksi',
             'rekapHarian',
             'totalPendapatan',
             'totalTransaksi',
+            'totalPengeluaran',
+            'labaBersih',
+            'logSummary',
             'bulan'
         ));
     }

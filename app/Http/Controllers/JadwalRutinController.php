@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalRutin;
 use App\Models\Pelanggan;
+use App\Models\JadwalLog;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -11,7 +12,7 @@ class JadwalRutinController extends Controller
 {
     // Daftar hari dalam Bahasa Indonesia
     private array $hariList = [
-        'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
+        'Setiap Hari', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'
     ];
 
     public function index(Request $request)
@@ -73,7 +74,7 @@ class JadwalRutinController extends Controller
     {
         $validated = $request->validate([
             'pelanggan_id'      => 'required|exists:pelanggan,id',
-            'hari_pengiriman'   => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+            'hari_pengiriman'   => 'required|in:Setiap Hari,Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
             'alamat_pengiriman' => 'nullable|string',
             'status_aktif'      => 'boolean',
             'catatan'           => 'nullable|string',
@@ -102,7 +103,7 @@ class JadwalRutinController extends Controller
     {
         $validated = $request->validate([
             'pelanggan_id'      => 'required|exists:pelanggan,id',
-            'hari_pengiriman'   => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
+            'hari_pengiriman'   => 'required|in:Setiap Hari,Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
             'alamat_pengiriman' => 'nullable|string',
             'status_aktif'      => 'boolean',
             'catatan'           => 'nullable|string',
@@ -131,5 +132,25 @@ class JadwalRutinController extends Controller
         $msg = $jadwalRutin->status_aktif ? 'diaktifkan' : 'dinonaktifkan';
 
         return redirect()->back()->with('success', "Jadwal rutin berhasil $msg.");
+    }
+
+    public function markAsFailed(Request $request, JadwalRutin $jadwalRutin)
+    {
+        $request->validate([
+            'catatan' => 'nullable|string'
+        ]);
+
+        JadwalLog::updateOrCreate(
+            [
+                'jadwal_rutin_id' => $jadwalRutin->id,
+                'tanggal' => Carbon::today(),
+            ],
+            [
+                'status' => 'gagal',
+                'catatan' => $request->catatan ?? 'Ditandai gagal secara manual.',
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Jadwal ditandai sebagai gagal untuk hari ini.');
     }
 }

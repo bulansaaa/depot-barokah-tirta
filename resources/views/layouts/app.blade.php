@@ -25,7 +25,7 @@
     <body class="bg-background font-body-md text-body-md text-on-surface antialiased" 
       x-init="lucide.createIcons()"
       x-data="{ 
-    ...
+        mobileMenuOpen: false,
         confirmModal: {
             show: false,
             title: '',
@@ -78,6 +78,12 @@
                href="{{ route('transaksi.index') }}">
                 <i data-lucide="receipt"></i>
                 <span class="font-label-md text-label-md">Transaksi</span>
+            </a>
+
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('pengeluaran.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+               href="{{ route('pengeluaran.index') }}">
+                <i data-lucide="wallet"></i>
+                <span class="font-label-md text-label-md">Pengeluaran</span>
             </a>
 
             <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('jadwal-rutin.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
@@ -152,6 +158,10 @@
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('transaksi.index') }}">
                     <i data-lucide="receipt"></i>
                     <span class="font-label-md text-label-md">Transaksi</span>
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('pengeluaran.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('pengeluaran.index') }}">
+                    <i data-lucide="wallet"></i>
+                    <span class="font-label-md text-label-md">Pengeluaran</span>
                 </a>
                 <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('jadwal-rutin.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('jadwal-rutin.index') }}">
                     <i data-lucide="calendar"></i>

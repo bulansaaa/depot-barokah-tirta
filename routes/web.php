@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JadwalRutinController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PengeluaranController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransaksiController;
@@ -30,7 +31,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Jadwal Rutin
     Route::patch('/jadwal-rutin/{jadwalRutin}/toggle', [JadwalRutinController::class, 'toggleStatus'])->name('jadwal-rutin.toggle');
+    Route::post('/jadwal-rutin/{jadwalRutin}/gagal', [JadwalRutinController::class, 'markAsFailed'])->name('jadwal-rutin.gagal');
     Route::resource('jadwal-rutin', JadwalRutinController::class)->except(['show']);
+
+    // Pengeluaran
+    Route::resource('pengeluaran', PengeluaranController::class)->except(['show']);
 
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');

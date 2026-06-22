@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 
 class Transaksi extends Model
 {
@@ -48,24 +49,32 @@ class Transaksi extends Model
         return $this->hasMany(TransaksiDetail::class, 'transaksi_id');
     }
 
-    // Generate kode transaksi otomatis: TRX-20250515-001
-    public static function generateKode(): string
+    // Generate kode transaksi otomatis: TRX-22-06-26-001 (prefix + DD-MM-YY + nomor urut)
+    public static function generateKode($tanggal = null): string
     {
-        $tanggal = now()->format('Ymd');
-        $prefix  = 'TRX-' . $tanggal . '-';
+        if (!$tanggal) {
+            $tanggal = now();
+        } else {
+            $tanggal = is_string($tanggal) ? Carbon::parse($tanggal) : $tanggal;
+        }
 
-        $last = self::where('kode_transaksi', 'like', $prefix . '%')
+        $dateFormat = $tanggal->format('d-m-y'); // 22-06-26
+        $prefix     = 'TRX-' . $dateFormat; // TRX-22-06-26
+        $pattern    = $prefix . '%';
+
+        $last = self::where('kode_transaksi', 'like', $pattern)
             ->orderByDesc('kode_transaksi')
             ->first();
 
         if ($last) {
-            $lastNumber = (int) substr($last->kode_transaksi, -3);
+            // Format: TRX-22-06-26-001, extract nomor urut dari posisi 12 (setelah "TRX-22-06-26-")
+            $lastNumber = (int) substr($last->kode_transaksi, 12, 3);
             $newNumber  = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } else {
             $newNumber = '001';
         }
 
-        return $prefix . $newNumber;
+        return $prefix . '-' . $newNumber;
     }
 
     // Scope filter berdasarkan status
@@ -85,5 +94,17 @@ class Transaksi extends Model
     {
         return $query->whereMonth('tanggal_transaksi', now()->month)
                      ->whereYear('tanggal_transaksi', now()->year);
+    }
+
+    // Scope urutkan dari tanggal paling lama (oldest first)
+    public function scopeOldestFirst($query)
+    {
+        return $query->orderBy('tanggal_transaksi', 'asc');
+    }
+
+    // Scope urutkan dari tanggal paling baru (newest first)
+    public function scopeNewestFirst($query)
+    {
+        return $query->orderBy('tanggal_transaksi', 'desc');
     }
 }

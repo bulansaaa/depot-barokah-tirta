@@ -6,8 +6,11 @@ use App\Models\Transaksi;
 use App\Models\TransaksiDetail;
 use App\Models\Pelanggan;
 use App\Models\Produk;
+use App\Models\JadwalRutin;
+use App\Models\JadwalLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
@@ -56,6 +59,7 @@ class TransaksiController extends Controller
             'metode_pemesanan'  => 'required|in:langsung,whatsapp,telepon',
             'alamat_pengiriman' => 'required_if:tipe_transaksi,antar|nullable|string',
             'no_hp_pengiriman'  => 'required_if:tipe_transaksi,antar|nullable|string|max:20',
+            'tanggal_transaksi' => 'required|date|before_or_equal:today',
             'catatan'           => 'nullable|string',
             'produk'            => 'required|array|min:1',
             'produk.*.id'       => 'required|exists:produk,id',
@@ -64,6 +68,7 @@ class TransaksiController extends Controller
             'produk.required'            => 'Minimal satu produk harus dipilih.',
             'alamat_pengiriman.required_if' => 'Alamat pengiriman wajib diisi untuk tipe antar.',
             'no_hp_pengiriman.required_if'  => 'No HP pengiriman wajib diisi untuk tipe antar.',
+            'tanggal_transaksi.before_or_equal' => 'Tanggal transaksi tidak boleh melebihi hari ini.',
         ]);
 
         DB::transaction(function () use ($request) {
@@ -87,9 +92,12 @@ class TransaksiController extends Controller
             // Tentukan status awal
             $status = $request->tipe_transaksi === 'langsung' ? 'selesai' : 'pending';
 
+            // Tentukan tanggal transaksi (Gunakan tanggal pilihan + jam sekarang)
+            $tanggal = Carbon::parse($request->tanggal_transaksi)->setTimeFrom(now());
+
             // Buat header transaksi
             $transaksi = Transaksi::create([
-                'kode_transaksi'    => Transaksi::generateKode(),
+                'kode_transaksi'    => Transaksi::generateKode($tanggal),
                 'pelanggan_id'      => $request->pelanggan_id,
                 'user_id'           => auth()->id(),
                 'tipe_transaksi'    => $request->tipe_transaksi,
@@ -97,7 +105,7 @@ class TransaksiController extends Controller
                 'alamat_pengiriman' => $request->alamat_pengiriman,
                 'no_hp_pengiriman'  => $request->no_hp_pengiriman,
                 'status_transaksi'  => $status,
-                'tanggal_transaksi' => now(),
+                'tanggal_transaksi' => $tanggal,
                 'total_harga'       => $total,
                 'catatan'           => $request->catatan,
             ]);
@@ -105,6 +113,27 @@ class TransaksiController extends Controller
             // Buat detail transaksi
             foreach ($items as $item) {
                 $transaksi->detail()->create($item);
+            }
+
+            // Jika ada pelanggan_id, cek apakah ada jadwal rutin hari ini
+            if ($request->pelanggan_id) {
+                $hariPilihan = $tanggal->locale('id')->isoFormat('dddd');
+                $jadwal = JadwalRutin::where('pelanggan_id', $request->pelanggan_id)
+                    ->aktif()
+                    ->hari($hariPilihan)
+                    ->first();
+
+                if ($jadwal) {
+                    JadwalLog::updateOrCreate(
+                        [
+                            'jadwal_rutin_id' => $jadwal->id,
+                            'tanggal' => $tanggal->toDateString(),
+                        ],
+                        [
+                            'status' => 'terkirim',
+                        ]
+                    );
+                }
             }
         });
 
@@ -142,11 +171,6 @@ class TransaksiController extends Controller
 
     public function destroy(Transaksi $transaksi)
     {
-        if ($transaksi->status_transaksi === 'selesai') {
-            return redirect()->back()
-                ->with('error', 'Transaksi yang sudah selesai tidak dapat dihapus.');
-        }
-
         $transaksi->delete();
 
         return redirect()->route('transaksi.index')

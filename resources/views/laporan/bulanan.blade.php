@@ -21,22 +21,50 @@
 </form>
 
 {{-- Statistik --}}
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
     <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-xs text-gray-500 uppercase">Periode</p>
-        <p class="text-xl font-bold text-gray-800 mt-1">
-            {{ $bulan->locale('id')->isoFormat('MMMM Y') }}
+        <p class="text-xs text-gray-500 uppercase">Total Pendapatan</p>
+        <p class="text-xl font-bold text-green-600 mt-1">
+            Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
+        </p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5">
+        <p class="text-xs text-gray-500 uppercase">Total Pengeluaran</p>
+        <p class="text-xl font-bold text-red-600 mt-1">
+            Rp {{ number_format($totalPengeluaran, 0, ',', '.') }}
+        </p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5 border-2 border-blue-100">
+        <p class="text-xs text-gray-500 uppercase">Laba Bersih</p>
+        <p class="text-xl font-bold text-blue-600 mt-1">
+            Rp {{ number_format($labaBersih, 0, ',', '.') }}
         </p>
     </div>
     <div class="bg-white rounded-xl shadow p-5">
         <p class="text-xs text-gray-500 uppercase">Total Transaksi</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">{{ $totalTransaksi }}</p>
+        <p class="text-xl font-bold text-gray-800 mt-1">{{ $totalTransaksi }}</p>
     </div>
-    <div class="bg-white rounded-xl shadow p-5">
-        <p class="text-xs text-gray-500 uppercase">Total Pendapatan</p>
-        <p class="text-2xl font-bold text-green-600 mt-1">
-            Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
-        </p>
+</div>
+
+{{-- Ringkasan Jadwal --}}
+<div class="bg-white rounded-xl shadow overflow-hidden mb-6">
+    <div class="p-5 border-b flex justify-between items-center">
+        <h3 class="font-semibold text-gray-700">Ringkasan Pelaksanaan Jadwal</h3>
+        <span class="text-xs text-gray-500">Periode: {{ $bulan->locale('id')->isoFormat('MMMM Y') }}</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x">
+        <div class="p-6 text-center">
+            <p class="text-xs text-gray-500 uppercase mb-1">Berhasil Terkirim</p>
+            <p class="text-3xl font-bold text-green-600">{{ $logSummary['terkirim'] ?? 0 }}</p>
+        </div>
+        <div class="p-6 text-center">
+            <p class="text-xs text-gray-500 uppercase mb-1">Gagal (Dibatalkan)</p>
+            <p class="text-3xl font-bold text-orange-500">{{ $logSummary['gagal'] ?? 0 }}</p>
+        </div>
+        <div class="p-6 text-center">
+            <p class="text-xs text-gray-500 uppercase mb-1">Terlewat</p>
+            <p class="text-3xl font-bold text-red-600">{{ $logSummary['terlewat'] ?? 0 }}</p>
+        </div>
     </div>
 </div>
 

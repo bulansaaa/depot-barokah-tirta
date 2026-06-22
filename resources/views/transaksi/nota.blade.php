@@ -70,16 +70,26 @@
         <div class="border-t border-dashed border-gray-300 my-3"></div>
 
         {{-- Detail Produk --}}
-        <div class="mb-3 space-y-2 text-xs">
-            @foreach($transaksi->detail as $item)
-            <div>
-                <p class="font-medium">{{ $item->produk->nama_produk }}</p>
-                <div class="flex justify-between text-gray-600">
-                    <span>{{ $item->qty }} x Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
-                    <span class="font-medium text-gray-800">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-                </div>
+        <div class="mb-3">
+            {{-- Header Tabel --}}
+            <div class="flex justify-between font-bold text-xs bg-gray-100 p-2 rounded mb-2">
+                <span class="flex-1">Produk</span>
+                <span class="w-12 text-center">Qty</span>
+                <span class="w-24 text-right">Harga</span>
+                <span class="w-24 text-right">Subtotal</span>
             </div>
-            @endforeach
+            
+            {{-- Item Produk --}}
+            <div class="space-y-2 text-xs">
+                @foreach($transaksi->detail as $item)
+                <div class="flex justify-between items-center py-1 border-b border-gray-100">
+                    <span class="flex-1 text-gray-800">{{ $item->produk->nama_produk }}</span>
+                    <span class="w-12 text-center text-gray-700">{{ $item->qty }}</span>
+                    <span class="w-24 text-right text-gray-600">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                    <span class="w-24 text-right font-medium text-gray-800">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                </div>
+                @endforeach
+            </div>
         </div>
 
         <div class="border-t border-dashed border-gray-300 my-3"></div>

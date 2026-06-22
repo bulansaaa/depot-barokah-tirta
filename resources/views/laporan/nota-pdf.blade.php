@@ -24,13 +24,20 @@
     <div class="row"><span>Pelanggan</span><span>{{ $transaksi->pelanggan->nama ?? 'Umum' }}</span></div>
     <div class="row"><span>Tipe</span><span style="text-transform:capitalize;">{{ $transaksi->tipe_transaksi }}</span></div>
     <div class="divider"></div>
+    {{-- Header Tabel Produk --}}
+    <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:10px; background:#f0f0f0; padding:4px 2px; margin-bottom:4px;">
+        <span style="flex:1;">Produk</span>
+        <span style="width:30px; text-align:center;">Qty</span>
+        <span style="width:50px; text-align:right;">Harga</span>
+        <span style="width:50px; text-align:right;">Subtotal</span>
+    </div>
+    {{-- Detail Produk --}}
     @foreach($transaksi->detail as $item)
-    <div>
-        <p class="bold">{{ $item->produk->nama_produk }}</p>
-        <div class="row small">
-            <span>{{ $item->qty }} x Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
-            <span class="bold">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-        </div>
+    <div style="display:flex; justify-content:space-between; font-size:10px; padding:2px 0; border-bottom:1px dotted #ddd;">
+        <span style="flex:1;">{{ $item->produk->nama_produk }}</span>
+        <span style="width:30px; text-align:center;">{{ $item->qty }}</span>
+        <span style="width:50px; text-align:right;">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+        <span style="width:50px; text-align:right; font-weight:bold;">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
     </div>
     @endforeach
     <div class="divider"></div>

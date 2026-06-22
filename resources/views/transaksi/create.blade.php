@@ -58,6 +58,14 @@
                     Detail Pesanan
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Transaction Date -->
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2 block">Tanggal Transaksi</label>
+                        <input type="date" name="tanggal_transaksi" id="tanggalTransaksi" value="{{ old('tanggal_transaksi', date('Y-m-d')) }}"
+                               class="w-full md:w-1/2 p-3 bg-surface-bright border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
+                        <p class="font-label-sm text-label-sm text-outline mt-1">Ubah jika ingin mencatat transaksi untuk tanggal yang sudah lewat (misal: kemarin).</p>
+                    </div>
+
                     <!-- Transaction Type -->
                     <div>
                         <label class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3 block">Tipe Transaksi</label>
@@ -123,61 +131,100 @@
                 <div class="p-gutter border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-low/50">
                     <h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">inventory_2</span>
-                        Produk
+                        Pilih Produk
                     </h3>
-                    <button type="button" onclick="tambahBarisProduk()" class="font-label-md text-label-md text-primary flex items-center gap-1 hover:underline">
-                        <span class="material-symbols-outlined text-[18px]">add</span> Tambah Barang
-                    </button>
                 </div>
-                <div id="produkContainer" class="p-0">
-                    @php $oldProduk = old('produk', [['id' => '', 'qty' => 1]]); @endphp
-                    @foreach($oldProduk as $index => $item)
-                        <div class="baris-produk flex flex-col md:flex-row items-start md:items-center justify-between p-gutter border-b border-outline-variant/30 hover:bg-surface-bright transition-colors gap-4">
-                            <div class="flex items-center gap-4 flex-1 w-full">
-                                <div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary border border-outline-variant/20 shrink-0">
-                                    <span class="material-symbols-outlined">water_bottle</span>
+
+                <div class="p-gutter">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="productGrid">
+                        @foreach($produk as $p)
+                            @php
+                                $oldQty = 0;
+                                $oldInput = old('produk');
+                                if (is_array($oldInput)) {
+                                    foreach ($oldInput as $item) {
+                                        if (isset($item['id']) && $item['id'] == $p->id) {
+                                            $oldQty = intval($item['qty'] ?? 0);
+                                            break;
+                                        }
+                                    }
+                                }
+                                $isSelected = $oldQty > 0;
+                                
+                                // Menentukan ikon berdasarkan nama produk agar visual lebih menarik
+                                $icon = 'water_drop';
+                                $iconColor = 'text-primary bg-primary-fixed/30';
+                                $lowercaseName = strtolower($p->nama_produk);
+                                if (strpos($lowercaseName, 'galon') !== false) {
+                                    $icon = 'water_bottle';
+                                    $iconColor = 'text-[#0f52ba] bg-[#0f52ba]/10';
+                                } elseif (strpos($lowercaseName, 'isi ulang') !== false || strpos($lowercaseName, 'refill') !== false) {
+                                    $icon = 'local_drink';
+                                    $iconColor = 'text-secondary bg-secondary-fixed/20';
+                                } elseif (strpos($lowercaseName, 'baru') !== false) {
+                                    $icon = 'new_releases';
+                                    $iconColor = 'text-tertiary bg-tertiary-fixed/40';
+                                }
+                            @endphp
+                            
+                            <div class="product-card cursor-pointer border rounded-xl p-5 flex flex-col justify-between transition-all duration-200 select-none relative {{ $isSelected ? 'border-primary bg-primary/5 shadow-sm shadow-primary/10 ring-1 ring-primary' : 'border-outline-variant/40 bg-surface-container-lowest hover:border-primary/50 hover:bg-surface-container-low/20' }}"
+                                 id="product-card-{{ $p->id }}"
+                                 data-id="{{ $p->id }}"
+                                 data-nama="{{ $p->nama_produk }}"
+                                 data-harga="{{ $p->harga }}"
+                                 data-satuan="{{ $p->satuan }}"
+                                 onclick="handleCardClick({{ $p->id }}, event)">
+                                
+                                <div class="flex items-start gap-4 mb-5">
+                                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border border-outline-variant/10 {{ $iconColor }}">
+                                        <span class="material-symbols-outlined text-[24px]">{{ $icon }}</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-title-md text-on-surface font-semibold leading-snug break-words pr-2">{{ $p->nama_produk }}</h4>
+                                        <p class="font-label-md text-on-surface-variant font-medium mt-1">
+                                             Rp {{ number_format($p->harga, 0, ',', '.') }} <span class="text-outline">/ {{ $p->satuan }}</span>
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="flex-1">
-                                    <select name="produk[{{ $index }}][id]" onchange="updateRowInfo(this)"
-                                            class="w-full bg-transparent border-none font-body-md text-body-md font-semibold text-on-surface focus:ring-0 p-0 appearance-none">
-                                        <option value="">-- Pilih Produk --</option>
-                                        @foreach($produk as $p)
-                                            <option value="{{ $p->id }}" data-harga="{{ $p->harga }}" data-satuan="{{ $p->satuan }}"
-                                                {{ $item['id'] == $p->id ? 'selected' : '' }}>
-                                                {{ $p->nama_produk }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <p class="font-label-sm text-label-sm text-on-surface-variant price-label">
-                                        @if($item['id'])
-                                            @php $p = $produk->find($item['id']); @endphp
-                                            {{ $p->satuan }} • Rp {{ number_format($p->harga, 0, ',', '.') }}
-                                        @else
-                                            Pilih produk untuk melihat harga
-                                        @endif
-                                    </p>
+
+                                <div class="mt-auto">
+                                    <div class="flex items-center border border-outline-variant/80 rounded-lg bg-surface-bright w-full justify-between overflow-hidden shadow-sm">
+                                        <button type="button" 
+                                                onclick="changeProductQty({{ $p->id }}, -1, event)" 
+                                                class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors focus:outline-none">
+                                            <span class="material-symbols-outlined text-[18px]">remove</span>
+                                        </button>
+                                        
+                                        <input type="number" 
+                                               id="qty-input-{{ $p->id }}" 
+                                               value="{{ $oldQty }}" 
+                                               min="0" 
+                                               oninput="manualQtyInput({{ $p->id }}, this, event)"
+                                               class="qty-field w-12 text-center bg-transparent border-none font-body-md text-body-md text-on-surface font-bold focus:ring-0 focus:outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                                        
+                                        <button type="button" 
+                                                onclick="changeProductQty({{ $p->id }}, 1, event)" 
+                                                class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors focus:outline-none">
+                                            <span class="material-symbols-outlined text-[18px]">add</span>
+                                        </button>
+                                    </div>
                                 </div>
+
+                                <!-- Input Tersembunyi untuk Form POST -->
+                                <input type="hidden" 
+                                       id="hidden-id-{{ $p->id }}" 
+                                       name="produk[{{ $p->id }}][id]" 
+                                       value="{{ $p->id }}" 
+                                       {{ $isSelected ? '' : 'disabled' }} />
+                                
+                                <input type="hidden" 
+                                       id="hidden-qty-{{ $p->id }}" 
+                                       name="produk[{{ $p->id }}][qty]" 
+                                       value="{{ $oldQty }}" 
+                                       {{ $isSelected ? '' : 'disabled' }} />
                             </div>
-                            <div class="flex items-center gap-6 w-full md:w-auto justify-between">
-                                <div class="flex items-center border border-outline-variant rounded-lg bg-surface-container-lowest">
-                                    <button type="button" onclick="changeQty(this, -1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-l-lg hover:bg-surface-container-low">
-                                        <span class="material-symbols-outlined text-[18px]">remove</span>
-                                    </button>
-                                    <input name="produk[{{ $index }}][qty]" value="{{ $item['qty'] }}" min="1" oninput="hitungTotal()"
-                                           class="w-16 h-8 text-center bg-transparent border-x border-outline-variant/50 font-body-md text-body-md text-on-surface focus:outline-none" type="number"/>
-                                    <button type="button" onclick="changeQty(this, 1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-r-lg hover:bg-surface-container-low">
-                                        <span class="material-symbols-outlined text-[18px]">add</span>
-                                    </button>
-                                </div>
-                                <div class="w-24 text-right shrink-0">
-                                    <p class="font-body-md text-body-md font-semibold text-on-surface subtotal">Rp 0</p>
-                                </div>
-                                <button type="button" onclick="hapusBaris(this)" class="text-error hover:bg-error-container p-1 rounded-md transition-colors" title="Hapus item">
-                                    <span class="material-symbols-outlined text-[20px]">delete</span>
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
@@ -188,10 +235,19 @@
                 <!-- Decorative top accent -->
                 <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
                 <h3 class="font-headline-sm text-headline-sm text-on-surface mb-6">Ringkasan Pesanan</h3>
+                
+                <div class="border-b border-outline-variant/30 pb-4 mb-4">
+                    <h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-3">Item Terpilih</h4>
+                    <div id="selectedItemsList" class="flex flex-col gap-3 max-h-[220px] overflow-y-auto pr-1">
+                        <!-- Item dinamis akan dimasukkan di sini melalui JS -->
+                        <p class="font-body-md text-body-md text-outline italic" id="emptyItemsPlaceholder">Belum ada produk terpilih.</p>
+                    </div>
+                </div>
+
                 <div class="flex flex-col gap-3 mb-6">
                     <div class="flex justify-between items-center">
-                        <span class="font-body-md text-body-md text-on-surface-variant">Subtotal</span>
-                        <span id="subtotalLabel" class="font-body-md text-body-md text-on-surface font-medium">Rp 0</span>
+                        <span class="font-body-md text-body-md text-on-surface-variant font-medium">Subtotal</span>
+                        <span id="subtotalLabel" class="font-body-md text-body-md text-on-surface font-bold">Rp 0</span>
                     </div>
                 </div>
                 <div class="border-t border-outline-variant/30 pt-4 mb-8">
@@ -215,8 +271,6 @@
 </form>
 
 <script>
-let barisIndex = {{ count($oldProduk) }};
-
 function toggleDeliveryFields() {
     const radioChecked = document.querySelector('input[name="tipe_transaksi"]:checked');
     if (!radioChecked) return;
@@ -241,7 +295,7 @@ function updateCustomerDetails() {
         document.getElementById('alamatPengiriman').value = alamat || '';
         document.getElementById('noHpPengiriman').value = nohp || '';
 
-        // If customer has an address, auto-set to delivery if currently walk-in
+        // Jika pelanggan memiliki alamat, set tipe transaksi otomatis ke Antar
         if (alamat && alamat.trim() !== "") {
             const currentTipe = document.querySelector('input[name="tipe_transaksi"]:checked');
             if (currentTipe && currentTipe.value === 'langsung') {
@@ -253,117 +307,141 @@ function updateCustomerDetails() {
             }
         }
     } else {
-        // Clear fields if Pelanggan Umum is selected
+        // Kosongkan kolom jika Pelanggan Umum dipilih
         document.getElementById('alamatPengiriman').value = '';
         document.getElementById('noHpPengiriman').value = '';
     }
 }
 
-function changeQty(btn, delta) {
-    const input = btn.parentElement.querySelector('input');
-    let val = parseInt(input.value) + delta;
-    if (isNaN(val) || val < 1) val = 1;
-    input.value = val;
-    hitungTotal();
-}
-
-function updateRowInfo(select) {
-    const row = select.closest('.baris-produk');
-    const priceLabel = row.querySelector('.price-label');
-    const selectedOption = select.options[select.selectedIndex];
-    
-    if (selectedOption && selectedOption.value !== "") {
-        const harga = parseFloat(selectedOption.dataset.harga);
-        const satuan = selectedOption.dataset.satuan;
-        priceLabel.textContent = `\${satuan} • Rp \${harga.toLocaleString('id-ID')}`;
-        
-        // Auto-focus quantity input
-        const qtyInput = row.querySelector('input[name*="[qty]"]');
-        if (qtyInput) qtyInput.focus();
-    } else {
-        priceLabel.textContent = 'Pilih produk untuk melihat harga';
+function handleCardClick(productId, event) {
+    // Jika klik terjadi pada tombol minus/plus atau input, jangan lakukan apa-apa
+    if (event.target.closest('button') || event.target.closest('input')) {
+        return;
     }
+    
+    // Klik pada area kartu lainnya akan menambah kuantitas produk sebanyak 1
+    changeProductQty(productId, 1, event);
+}
+
+function changeProductQty(productId, delta, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    const qtyInput = document.getElementById(`qty-input-${productId}`);
+    let qty = (parseInt(qtyInput.value) || 0) + delta;
+    if (qty < 0) qty = 0;
+    qtyInput.value = qty;
+    
+    updateProductCardState(productId, qty);
     hitungTotal();
 }
 
-function tambahBarisProduk() {
-    const container = document.getElementById('produkContainer');
-    const firstSelect = document.querySelector('select[name^="produk[0][id]"]') || document.querySelector('select[name$="[id]"]');
-    const optionsProduk = Array.from(firstSelect.options)
-        .map(o => `<option value="\${o.value}" data-harga="\${o.dataset.harga || 0}" data-satuan="\${o.dataset.satuan || ''}">\${o.text}</option>`)
-        .join('');
-
-    const div = document.createElement('div');
-    div.className = 'baris-produk flex flex-col md:flex-row items-start md:items-center justify-between p-gutter border-b border-outline-variant/30 hover:bg-surface-bright transition-colors gap-4';
-    div.innerHTML = `
-        <div class="flex items-center gap-4 flex-1 w-full">
-            <div class="w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary border border-outline-variant/20 shrink-0">
-                <span class="material-symbols-outlined">water_bottle</span>
-            </div>
-            <div class="flex-1">
-                <select name="produk[\${barisIndex}][id]" onchange="updateRowInfo(this)"
-                        class="w-full bg-transparent border-none font-body-md text-body-md font-semibold text-on-surface focus:ring-0 p-0 appearance-none">
-                    \${optionsProduk}
-                </select>
-                <p class="font-label-sm text-label-sm text-on-surface-variant price-label">Pilih produk untuk melihat harga</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-6 w-full md:w-auto justify-between">
-            <div class="flex items-center border border-outline-variant rounded-lg bg-surface-container-lowest">
-                <button type="button" onclick="changeQty(this, -1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-l-lg hover:bg-surface-container-low">
-                    <span class="material-symbols-outlined text-[18px]">remove</span>
-                </button>
-                <input name="produk[\${barisIndex}][qty]" value="1" min="1" oninput="hitungTotal()"
-                       class="w-16 h-8 text-center bg-transparent border-x border-outline-variant/50 font-body-md text-body-md text-on-surface focus:outline-none" type="number"/>
-                <button type="button" onclick="changeQty(this, 1)" class="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors rounded-r-lg hover:bg-surface-container-low">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
-                </button>
-            </div>
-            <div class="w-24 text-right shrink-0">
-                <p class="font-body-md text-body-md font-semibold text-on-surface subtotal">Rp 0</p>
-            </div>
-            <button type="button" onclick="hapusBaris(this)" class="text-error hover:bg-error-container p-1 rounded-md transition-colors" title="Remove item">
-                <span class="material-symbols-outlined text-[20px]">delete</span>
-            </button>
-        </div>
-    `;
-    container.appendChild(div);
-    barisIndex++;
+function manualQtyInput(productId, input, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+    let qty = parseInt(input.value);
+    if (isNaN(qty) || qty < 0) {
+        qty = 0;
+    }
+    input.value = qty;
+    updateProductCardState(productId, qty);
     hitungTotal();
 }
 
-function hapusBaris(btn) {
-    const baris = btn.closest('.baris-produk');
-    const semua = document.querySelectorAll('.baris-produk');
-    if (semua.length > 1) {
-        baris.remove();
-        hitungTotal();
+function updateProductCardState(productId, qty) {
+    const card = document.getElementById(`product-card-${productId}`);
+    const hiddenId = document.getElementById(`hidden-id-${productId}`);
+    const hiddenQty = document.getElementById(`hidden-qty-${productId}`);
+    
+    if (qty > 0) {
+        // Tambahkan gaya aktif pada kartu
+        card.classList.remove('border-outline-variant/40', 'bg-surface-container-lowest', 'hover:border-primary/50', 'hover:bg-surface-container-low/20');
+        card.classList.add('border-primary', 'bg-primary/5', 'shadow-sm', 'shadow-primary/10', 'ring-1', 'ring-primary');
+        
+        // Aktifkan hidden inputs untuk dikirim dalam request POST
+        hiddenId.disabled = false;
+        hiddenQty.disabled = false;
+        hiddenQty.value = qty;
+    } else {
+        // Hapus gaya aktif pada kartu
+        card.classList.remove('border-primary', 'bg-primary/5', 'shadow-sm', 'shadow-primary/10', 'ring-1', 'ring-primary');
+        card.classList.add('border-outline-variant/40', 'bg-surface-container-lowest', 'hover:border-primary/50', 'hover:bg-surface-container-low/20');
+        
+        // Nonaktifkan hidden inputs agar tidak terkirim saat qty = 0
+        hiddenId.disabled = true;
+        hiddenQty.disabled = true;
+        hiddenQty.value = 0;
     }
 }
 
 function hitungTotal() {
     let total = 0;
-    document.querySelectorAll('.baris-produk').forEach(baris => {
-        const select = baris.querySelector('select');
-        const qtyInput = baris.querySelector('input[name*="[qty]"]');
-        const subtotalEl = baris.querySelector('.subtotal');
-        const selectedOption = select.options[select.selectedIndex];
-        const harga = parseFloat(selectedOption?.dataset?.harga || 0);
-        let qty = parseInt(qtyInput?.value || 0);
-        if (qty < 0) qty = 0;
-        const subtotal = harga * qty;
-        total += subtotal;
-        if (subtotalEl) {
-            subtotalEl.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+    const selectedListEl = document.getElementById('selectedItemsList');
+    const placeholderEl = document.getElementById('emptyItemsPlaceholder');
+    
+    // Hapus item lama dalam ringkasan pesanan
+    if (selectedListEl) {
+        selectedListEl.querySelectorAll('.dynamic-item').forEach(el => el.remove());
+    }
+    
+    let hasItems = false;
+    
+    document.querySelectorAll('.product-card').forEach(card => {
+        const id = card.dataset.id;
+        const nama = card.dataset.nama;
+        const harga = parseFloat(card.dataset.harga || 0);
+        const satuan = card.dataset.satuan;
+        
+        const qtyInput = document.getElementById(`qty-input-${id}`);
+        const qty = parseInt(qtyInput?.value || 0);
+        
+        if (qty > 0) {
+            hasItems = true;
+            const subtotal = harga * qty;
+            total += subtotal;
+            
+            // Tambahkan ke ringkasan pesanan di kolom kanan
+            if (selectedListEl) {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'dynamic-item flex justify-between items-start text-sm border-b border-outline-variant/10 pb-2 last:border-b-0 last:pb-0';
+                itemDiv.innerHTML = `
+                    <div class="flex-1 min-w-0 pr-2">
+                        <p class="font-body-md text-on-surface font-semibold truncate">\${nama}</p>
+                        <p class="font-label-sm text-outline mt-0.5">\${qty} \${satuan} @ Rp \${harga.toLocaleString('id-ID')}</p>
+                    </div>
+                    <span class="font-body-md text-on-surface font-semibold shrink-0">Rp \${subtotal.toLocaleString('id-ID')}</span>
+                `;
+                selectedListEl.appendChild(itemDiv);
+            }
         }
     });
-    document.getElementById('subtotalLabel').textContent = 'Rp ' + total.toLocaleString('id-ID');
-    document.getElementById('totalHarga').textContent = 'Rp ' + total.toLocaleString('id-ID');
+    
+    if (placeholderEl) {
+        if (hasItems) {
+            placeholderEl.classList.add('hidden');
+        } else {
+            placeholderEl.classList.remove('hidden');
+        }
+    }
+    
+    const totalFormatted = 'Rp ' + total.toLocaleString('id-ID');
+    document.getElementById('subtotalLabel').textContent = totalFormatted;
+    document.getElementById('totalHarga').textContent = totalFormatted;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     updateCustomerDetails();
     toggleDeliveryFields();
+    
+    // Inisialisasi status kartu produk berdasarkan nilai awal (misalnya input lama setelah validasi gagal)
+    document.querySelectorAll('.product-card').forEach(card => {
+        const id = card.dataset.id;
+        const qtyInput = document.getElementById(`qty-input-${id}`);
+        const qty = parseInt(qtyInput?.value || 0);
+        updateProductCardState(id, qty);
+    });
+    
     hitungTotal();
 });
 </script>

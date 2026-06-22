@@ -171,7 +171,6 @@
                                 <span class="material-symbols-outlined text-[20px]">receipt_long</span>
                             </a>
                             
-                            @if($trx->status_transaksi !== 'selesai' && $trx->status_transaksi !== 'dibatalkan')
                             <form method="POST" action="{{ route('transaksi.destroy', $trx) }}" class="inline" 
                                   x-on:submit.prevent="
                                     const currentForm = $el;
@@ -188,7 +187,6 @@
                                     <span class="material-symbols-outlined text-[20px]">delete</span>
                                 </button>
                             </form>
-                            @endif
                         </div>
                     </td>
                 </tr>

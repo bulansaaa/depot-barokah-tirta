@@ -29,6 +29,12 @@ class JadwalRutin extends Model
         return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
     }
 
+    // Relasi: satu jadwal memiliki banyak log harian
+    public function logs()
+    {
+        return $this->hasMany(JadwalLog::class, 'jadwal_rutin_id');
+    }
+
     // Scope: hanya jadwal yang aktif
     public function scopeAktif($query)
     {
@@ -38,7 +44,10 @@ class JadwalRutin extends Model
     // Scope: filter berdasarkan hari
     public function scopeHari($query, string $hari)
     {
-        return $query->where('hari_pengiriman', $hari);
+        return $query->where(function($q) use ($hari) {
+            $q->where('hari_pengiriman', $hari)
+              ->orWhere('hari_pengiriman', 'Setiap Hari');
+        });
     }
 
     // Helper: cek apakah jadwal ini aktif hari ini

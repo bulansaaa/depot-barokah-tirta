@@ -10,30 +10,50 @@
 <!-- Report Summary Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-8">
     <!-- Summary Today -->
-    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 flex items-center gap-6 shadow-sm">
-        <div class="w-16 h-16 rounded-2xl bg-primary-container/20 flex items-center justify-center text-primary">
+    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 flex items-start gap-6 shadow-sm">
+        <div class="w-16 h-16 rounded-2xl bg-primary-container/20 flex items-center justify-center text-primary shrink-0">
             <span class="material-symbols-outlined text-4xl icon-filled">today</span>
         </div>
         <div class="flex-1">
-            <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Performa Hari Ini</h3>
-            <div class="flex items-baseline gap-2">
-                <span class="font-headline-md text-headline-md text-on-surface">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</span>
+            <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Performa Hari Ini</h3>
+            <div class="space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-on-surface-variant">Pendapatan:</span>
+                    <span class="font-medium text-on-surface">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-on-surface-variant">Pengeluaran:</span>
+                    <span class="font-medium text-error">Rp {{ number_format($pengeluaranHariIni, 0, ',', '.') }}</span>
+                </div>
+                <div class="pt-1 mt-1 border-t border-outline-variant/30 flex justify-between items-center">
+                    <span class="text-xs font-bold text-on-surface">Laba Bersih:</span>
+                    <span class="font-bold text-secondary">Rp {{ number_format($pendapatanHariIni - $pengeluaranHariIni, 0, ',', '.') }}</span>
+                </div>
             </div>
-            <p class="font-body-md text-body-md text-on-surface-variant">{{ $totalTransaksiHariIni }} Transaksi Selesai</p>
         </div>
     </div>
 
     <!-- Summary Month -->
-    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 flex items-center gap-6 shadow-sm">
-        <div class="w-16 h-16 rounded-2xl bg-secondary-container/20 flex items-center justify-center text-secondary">
+    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 flex items-start gap-6 shadow-sm">
+        <div class="w-16 h-16 rounded-2xl bg-secondary-container/20 flex items-center justify-center text-secondary shrink-0">
             <span class="material-symbols-outlined text-4xl icon-filled">calendar_month</span>
         </div>
         <div class="flex-1">
-            <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Performa Bulan Ini</h3>
-            <div class="flex items-baseline gap-2">
-                <span class="font-headline-md text-headline-md text-on-surface">Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}</span>
+            <h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-2">Performa Bulan Ini</h3>
+            <div class="space-y-1">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-on-surface-variant">Pendapatan:</span>
+                    <span class="font-medium text-on-surface">Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs text-on-surface-variant">Pengeluaran:</span>
+                    <span class="font-medium text-error">Rp {{ number_format($pengeluaranBulanIni, 0, ',', '.') }}</span>
+                </div>
+                <div class="pt-1 mt-1 border-t border-outline-variant/30 flex justify-between items-center">
+                    <span class="text-xs font-bold text-on-surface">Laba Bersih:</span>
+                    <span class="font-bold text-secondary">Rp {{ number_format($pendapatanBulanIni - $pengeluaranBulanIni, 0, ',', '.') }}</span>
+                </div>
             </div>
-            <p class="font-body-md text-body-md text-on-surface-variant">{{ $totalTransaksiBulanIni }} Transaksi Selesai</p>
         </div>
     </div>
 </div>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaksi;
 use App\Models\Pelanggan;
 use App\Models\JadwalRutin;
+use App\Models\Pengeluaran;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -27,16 +28,29 @@ class DashboardController extends Controller
             ->where('status_transaksi', 'selesai')
             ->sum('total_harga');
 
+        // Pengeluaran
+        $pengeluaranHariIni = Pengeluaran::whereDate('tanggal', today())->sum('nominal');
+        $pengeluaranBulanIni = Pengeluaran::bulanIni()->sum('nominal');
+
+        // Laba Bersih
+        $labaHariIni = $pendapatanHariIni - $pengeluaranHariIni;
+        $labaBulanIni = $pendapatanBulanIni - $pengeluaranBulanIni;
+
         // Transaksi pending & diproses
         $transaksiPending = Transaksi::byStatus('pending')->count();
         $transaksiDiproses = Transaksi::byStatus('diproses')->count();
 
-        // Jadwal pengantaran hari ini (hanya yang belum terkirim)
-        $jadwalHariIni = JadwalRutin::with('pelanggan')
+        // Jadwal pengantaran hari ini (hanya yang belum terkirim/gagal/terlewat)
+        $jadwalHariIni = JadwalRutin::with(['pelanggan', 'pelanggan.transaksi' => function ($query) {
+                $query->whereDate('tanggal_transaksi', Carbon::today());
+            }])
             ->aktif()
             ->hari($hariIni)
             ->whereDoesntHave('pelanggan.transaksi', function ($query) {
                 $query->whereDate('tanggal_transaksi', Carbon::today());
+            })
+            ->whereDoesntHave('logs', function ($query) {
+                $query->whereDate('tanggal', Carbon::today());
             })
             ->get();
 
@@ -61,6 +75,10 @@ class DashboardController extends Controller
             'pendapatanHariIni',
             'transaksibulanIni',
             'pendapatanBulanIni',
+            'pengeluaranHariIni',
+            'pengeluaranBulanIni',
+            'labaHariIni',
+            'labaBulanIni',
             'transaksiPending',
             'transaksiDiproses',
             'jadwalHariIni',

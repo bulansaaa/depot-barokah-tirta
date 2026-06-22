@@ -13,53 +13,77 @@
     </a>
 </div>
 
-<!-- Quick Stats -->
-<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter mb-6">
-    <!-- Card 1 -->
-    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
-        <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+<!-- Quick Stats (Hari Ini) -->
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 px-1">Ringkasan Hari Ini</h2>
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter mb-8">
+    <!-- Pendapatan -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
         <div class="flex justify-between items-start gap-2">
-            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Transaksi Hari Ini</span>
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs">Pendapatan</span>
             <div class="p-2 bg-primary-container/30 rounded-lg text-primary shrink-0">
-                <i data-lucide="truck" class="w-5 h-5"></i>
+                <i data-lucide="trending-up" class="w-4 h-4"></i>
             </div>
         </div>
-        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">{{ $transaksiHariIni }}</div>
+        <div class="mt-2">
+            <div class="font-headline-md text-headline-md text-on-surface">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</div>
+            <p class="text-xs text-on-surface-variant mt-1">{{ $transaksiHariIni }} Transaksi</p>
+        </div>
     </div>
-    <!-- Card 2 -->
-    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
-        <div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-xl"></div>
+    <!-- Pengeluaran -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
         <div class="flex justify-between items-start gap-2">
-            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Pendapatan Hari Ini</span>
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs">Pengeluaran</span>
+            <div class="p-2 bg-error-container/30 rounded-lg text-error shrink-0">
+                <i data-lucide="trending-down" class="w-4 h-4"></i>
+            </div>
+        </div>
+        <div class="mt-2">
+            <div class="font-headline-md text-headline-md text-error">Rp {{ number_format($pengeluaranHariIni, 0, ',', '.') }}</div>
+            <p class="text-xs text-on-surface-variant mt-1">Beban operasional</p>
+        </div>
+    </div>
+    <!-- Laba Bersih -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div class="flex justify-between items-start gap-2">
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs">Laba Bersih</span>
             <div class="p-2 bg-secondary-container/30 rounded-lg text-secondary shrink-0">
-                <i data-lucide="banknote" class="w-5 h-5"></i>
+                <i data-lucide="dollar-sign" class="w-4 h-4"></i>
             </div>
         </div>
-        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</div>
+        <div class="mt-2">
+            <div class="font-headline-md text-headline-md text-secondary">Rp {{ number_format($labaHariIni, 0, ',', '.') }}</div>
+            <p class="text-xs text-on-surface-variant mt-1">Keuntungan hari ini</p>
+        </div>
     </div>
-    <!-- Card 3 -->
-    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
-        <div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-xl"></div>
+    <!-- Pelanggan -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
         <div class="flex justify-between items-start gap-2">
-            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Pendapatan Bulan Ini</span>
+            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs">Total Pelanggan</span>
             <div class="p-2 bg-tertiary-container/30 rounded-lg text-tertiary shrink-0">
-                <i data-lucide="wallet" class="w-5 h-5"></i>
+                <i data-lucide="users" class="w-4 h-4"></i>
             </div>
         </div>
-        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface truncate" title="Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}">
-            Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}
+        <div class="mt-2">
+            <div class="font-headline-md text-headline-md text-on-surface">{{ $totalPelanggan }}</div>
+            <p class="text-xs text-on-surface-variant mt-1">Pelanggan terdaftar</p>
         </div>
     </div>
-    <!-- Card 4 -->
-    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm p-5 md:p-6 relative overflow-hidden flex flex-col justify-between min-h-[120px] md:h-32 hover:shadow-md transition-shadow">
-        <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
-        <div class="flex justify-between items-start gap-2">
-            <span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-xs md:text-sm">Total Pelanggan</span>
-            <div class="p-2 bg-primary-container/30 rounded-lg text-primary shrink-0">
-                <i data-lucide="users" class="w-5 h-5"></i>
-            </div>
-        </div>
-        <div class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">{{ $totalPelanggan }}</div>
+</section>
+
+<!-- Stats Bulanan -->
+<h2 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-4 px-1">Ringkasan Bulan Ini</h2>
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-8">
+    <div class="bg-surface-container rounded-xl p-5 border border-outline-variant/20">
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Pendapatan</p>
+        <p class="font-headline-sm text-headline-sm text-on-surface">Rp {{ number_format($pendapatanBulanIni, 0, ',', '.') }}</p>
+    </div>
+    <div class="bg-surface-container rounded-xl p-5 border border-outline-variant/20">
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Pengeluaran</p>
+        <p class="font-headline-sm text-headline-sm text-error">Rp {{ number_format($pengeluaranBulanIni, 0, ',', '.') }}</p>
+    </div>
+    <div class="bg-surface-container rounded-xl p-5 border border-outline-variant/20">
+        <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Laba Bersih</p>
+        <p class="font-headline-sm text-headline-sm text-secondary">Rp {{ number_format($labaBulanIni, 0, ',', '.') }}</p>
     </div>
 </section>
 
@@ -99,7 +123,13 @@
     </div>
 
     <!-- Jadwal Hari Ini & Besok (col 4) -->
-    <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm flex flex-col h-[380px]" x-data="{ tab: 'hari-ini' }">
+    <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl border border-outline-variant/30 shadow-sm flex flex-col h-[380px]" 
+         x-data="{ 
+            tab: 'hari-ini', 
+            showGagalModal: false, 
+            selectedJadwalNama: '', 
+            actionUrl: '' 
+         }">
         <div class="p-4 border-b border-outline-variant/30 flex flex-col gap-4">
             <h2 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Jadwal Pengiriman</h2>
             <div class="flex bg-surface-container-low p-1 rounded-lg">
@@ -133,9 +163,16 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" class="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary p-2 rounded-lg transition-colors shrink-0" title="Buat Transaksi">
-                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                        </a>
+                        <div class="flex gap-2 shrink-0">
+                            <button @click="showGagalModal = true; selectedJadwalNama = '{{ $jadwal->pelanggan->nama }}'; actionUrl = '{{ route('jadwal-rutin.gagal', $jadwal) }}'" 
+                                    class="bg-error/10 text-error hover:bg-error hover:text-on-error p-2 rounded-lg transition-colors" 
+                                    title="Tandai Gagal">
+                                <i data-lucide="x-circle" class="w-4 h-4"></i>
+                            </button>
+                            <a href="{{ route('transaksi.create', ['pelanggan_id' => $jadwal->pelanggan_id, 'tipe_transaksi' => 'antar']) }}" class="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary p-2 rounded-lg transition-colors shrink-0" title="Buat Transaksi">
+                                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            </a>
+                        </div>
                     </div>
                 @empty
                     <div class="flex flex-col items-center justify-center py-12 text-on-surface-variant opacity-50">
@@ -171,6 +208,36 @@
                         <p class="font-body-md">Tidak ada jadwal untuk besok</p>
                     </div>
                 @endforelse
+            </div>
+        </div>
+
+        <!-- Modal Gagal -->
+        <div x-show="showGagalModal" 
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+             x-cloak
+             @keydown.escape.window="showGagalModal = false">
+            <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-md overflow-hidden" @click.away="showGagalModal = false">
+                <div class="p-6 border-b border-outline-variant/30">
+                    <h3 class="font-headline-sm text-headline-sm font-semibold text-on-surface">Tandai Gagal Pengiriman</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant mt-1" x-text="'Pelanggan: ' + selectedJadwalNama"></p>
+                </div>
+                <form :action="actionUrl" method="POST" class="p-6">
+                    @csrf
+                    <div class="mb-4">
+                        <label for="catatan_gagal" class="block font-label-md text-label-md text-on-surface-variant mb-2">Alasan Gagal (Opsional)</label>
+                        <textarea name="catatan" id="catatan_gagal" rows="3" 
+                                  class="w-full rounded-lg border-outline-variant bg-surface focus:border-primary focus:ring-primary text-body-md"
+                                  placeholder="Contoh: Rumah kosong, Pelanggan membatalkan, dsb."></textarea>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" @click="showGagalModal = false" class="px-4 py-2 text-label-md font-medium text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-4 py-2 bg-error text-on-error text-label-md font-medium rounded-lg hover:bg-error/90 transition-colors shadow-sm">
+                            Simpan Status Gagal
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
