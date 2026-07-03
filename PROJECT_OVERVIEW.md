@@ -4,10 +4,35 @@
 **Depot Barokah Tirta** adalah sistem manajemen operasional untuk depot air minum isi ulang. Aplikasi ini dirancang untuk mencatat transaksi penjualan (langsung maupun antar), mengelola data pelanggan, memantau jadwal pengiriman rutin, dan menghasilkan laporan keuangan secara otomatis.
 
 ## Tech Stack
-- **Backend:** Laravel 11 (PHP)
-- **Frontend:** Blade Templates, Tailwind CSS, Alpine.js
-- **Database:** MySQL/MariaDB
-- **Reporting:** DomPDF (untuk cetak nota dan laporan)
+
+### Backend
+- **Language:** PHP 8.3+
+- **Framework:** Laravel 13.8
+- **ORM:** Eloquent (built-in Laravel)
+- **Package Manager:** Composer
+
+### Frontend
+- **Template Engine:** Laravel Blade
+- **CSS Framework:** Tailwind CSS 3.1
+- **JavaScript Library:** Alpine.js 3.4.2 (Lightweight DOM interaction)
+- **Module Bundler:** Vite 8.0
+- **CSS Processing:** PostCSS 8.4 + Autoprefixer 10.4
+- **HTTP Client:** Axios 1.16.1
+
+### Database
+- **Primary DB:** MySQL / MariaDB
+- **Version:** Compatible dengan Laravel 13
+
+### Reporting & PDF
+- **PDF Generation:** DomPDF 3.1
+- **Format Output:** HTML to PDF
+
+### Development Tools
+- **Code Formatting:** Laravel Pint 1.27
+- **Testing:** PHPUnit 12.5.12
+- **Task Runner:** Concurrently 9.0.1
+- **Testing Library:** Mockery 1.6
+- **Faker:** FakerPHP 1.23 (dummy data generation)
 
 ## Modul & Fitur Utama
 
@@ -91,6 +116,20 @@
 - **Laporan Bulanan:** Rekapitulasi performa penjualan per bulan.
 - **Ekspor PDF:** Semua laporan dapat diunduh dalam format PDF untuk keperluan arsip.
 
+### 7. Manajemen Pengeluaran (Pengeluaran)
+- **Controller:** `app/Http/Controllers/PengeluaranController.php`
+- **Models:** `app/Models/Pengeluaran.php`
+- **Views:** 
+  - `resources/views/pengeluaran/index.blade.php` (Daftar pengeluaran)
+  - `resources/views/pengeluaran/create.blade.php` (Tambah pengeluaran)
+  - `resources/views/pengeluaran/edit.blade.php` (Edit pengeluaran)
+- **Pencatatan Pengeluaran:** Mencatat semua biaya operasional (bensin, gaji, maintenance, dll).
+- **Kategori Pengeluaran:** Operasional, Pemeliharaan, Bahan Baku, Gaji, Lainnya.
+- **Input Nominal Currency:** Format otomatis dengan pemisah ribuan (Rp. X.XXX.XXX).
+- **Dokumentasi:** Opsi upload foto struk/nota untuk verifikasi.
+- **Filtering:** Pencarian berdasarkan nama, kategori, dan tanggal.
+- **Analisis Keuangan:** Data pengeluaran terintegrasi untuk perhitungan laba bersih di dashboard.
+
 ## Struktur Data (Model Utama)
 - **User:** Admin sistem (`app/Models/User.php`)
 - **Pelanggan:** Data pembeli (`app/Models/Pelanggan.php`)
@@ -98,6 +137,8 @@
 - **Transaksi:** Data utama penjualan/Header (`app/Models/Transaksi.php`)
 - **TransaksiDetail:** Rincian item per transaksi (`app/Models/TransaksiDetail.php`)
 - **JadwalRutin:** Pengaturan pengiriman berulang (`app/Models/JadwalRutin.php`)
+- **JadwalLog:** Log/tracking pelaksanaan jadwal (`app/Models/JadwalLog.php`)
+- **Pengeluaran:** Pencatatan biaya operasional (`app/Models/Pengeluaran.php`)
 
 ## Arahan UI/UX (Untuk Prompt UI)
 - **Tema:** Bersih, profesional, dan modern dengan dominasi warna biru (melambangkan air/kepercayaan) dan hijau (pertumbuhan/keuangan).

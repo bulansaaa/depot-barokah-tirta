@@ -22,7 +22,7 @@
         }
     </style>
     </head>
-    <body class="bg-background font-body-md text-body-md text-on-surface antialiased" 
+    <body class="bg-slate-50 font-body-md text-body-md text-gray-900 antialiased" 
       x-init="lucide.createIcons()"
       x-data="{ 
         mobileMenuOpen: false,
@@ -47,67 +47,75 @@
 
 <div class="flex min-h-screen">
     <!-- SideNavBar -->
-    <aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-outline-variant/30 bg-surface-container-low hidden lg:flex flex-col py-8 z-50">
+    <aside class="fixed left-0 top-0 h-screen w-[260px] border-r border-gray-200 bg-white hidden lg:flex flex-col py-8 z-50">
         <div class="px-6 mb-8 flex flex-col gap-2">
-            
             <div>
-                <h2 class="font-headline-sm text-headline-sm font-bold text-primary">Barokah Tirta</h2>
+                <h2 class="font-headline-sm text-headline-sm font-bold text-blue-600">Barokah Tirta</h2>
+                <p class="text-xs text-gray-500 mt-1">Depot Air Isi Ulang</p>
             </div>
         </div>
-        <nav class="flex-1 flex flex-col gap-1">
-            <!-- Active Tab: Dashboard -->
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('dashboard') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+        <nav class="flex-1 flex flex-col gap-0.5">
+            <!-- Dashboard -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('dashboard') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('dashboard') }}">
-                <i data-lucide="layout-dashboard"></i>
+                <i data-lucide="layout-dashboard" class="w-5 h-5 {{ request()->routeIs('dashboard') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Dashboard</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('pelanggan.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+            <!-- Pelanggan -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('pelanggan.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('pelanggan.index') }}">
-                <i data-lucide="users"></i>
+                <i data-lucide="users" class="w-5 h-5 {{ request()->routeIs('pelanggan.*') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Pelanggan</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('produk.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+            <!-- Produk -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('produk.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('produk.index') }}">
-                <i data-lucide="package"></i>
+                <i data-lucide="package" class="w-5 h-5 {{ request()->routeIs('produk.*') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Produk</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('transaksi.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+            <!-- Transaksi -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('transaksi.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('transaksi.index') }}">
-                <i data-lucide="receipt"></i>
+                <i data-lucide="receipt" class="w-5 h-5 {{ request()->routeIs('transaksi.*') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Transaksi</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('pengeluaran.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+            <!-- Pengeluaran -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('pengeluaran.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('pengeluaran.index') }}">
-                <i data-lucide="wallet"></i>
+                <i data-lucide="wallet" class="w-5 h-5 {{ request()->routeIs('pengeluaran.*') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Pengeluaran</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('jadwal-rutin.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+            <!-- Jadwal Rutin -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('jadwal-rutin.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('jadwal-rutin.index') }}">
-                <i data-lucide="calendar"></i>
+                <i data-lucide="calendar" class="w-5 h-5 {{ request()->routeIs('jadwal-rutin.*') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Jadwal Rutin</span>
             </a>
 
-            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('laporan.*') ? 'bg-surface-container-highest text-primary border-l-4 border-primary' : 'text-on-surface-variant hover:bg-surface-container hover:translate-x-1' }}"
+            <!-- Laporan -->
+            <a class="flex items-center gap-3 px-4 py-3 transition-all duration-200 cursor-pointer {{ request()->routeIs('laporan.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }}"
                href="{{ route('laporan.index') }}">
-                <i data-lucide="bar-chart-3"></i>
+                <i data-lucide="bar-chart-3" class="w-5 h-5 {{ request()->routeIs('laporan.*') ? 'text-blue-600' : '' }}"></i>
                 <span class="font-label-md text-label-md">Laporan</span>
             </a>
         </nav>
-        <div class="mt-auto flex flex-col gap-1 border-t border-outline-variant/30 pt-4 px-0">
-            <a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container hover:translate-x-1 transition-all duration-300 cursor-pointer active:bg-surface-container-high {{ request()->routeIs('profile.*') ? 'text-primary' : '' }}"
+        <div class="mt-auto flex flex-col gap-0.5 border-t border-gray-200 pt-4 px-0">
+            <!-- Pengaturan -->
+            <a class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 cursor-pointer {{ request()->routeIs('profile.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : '' }}"
                href="{{ route('profile.edit') }}">
-                <i data-lucide="settings"></i>
+                <i data-lucide="settings" class="w-5 h-5"></i>
                 <span class="font-label-md text-label-md">Pengaturan</span>
             </a>
+            <!-- Logout -->
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container hover:translate-x-1 transition-all duration-300 cursor-pointer active:bg-surface-container-high">
-                    <i data-lucide="log-out"></i>
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200 cursor-pointer">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
                     <span class="font-label-md text-label-md">Logout</span>
                 </button>
             </form>
@@ -127,7 +135,7 @@
         <div class="fixed inset-0 bg-black/50" @click="mobileMenuOpen = false"></div>
 
         <!-- Sidebar -->
-        <div class="fixed left-0 top-0 bottom-0 w-[260px] bg-surface-container-low flex flex-col py-8"
+        <div class="fixed left-0 top-0 bottom-0 w-[260px] bg-white flex flex-col py-8"
              x-transition:enter="transition ease-out duration-300 transform"
              x-transition:enter-start="-translate-x-full"
              x-transition:enter-end="translate-x-0"
@@ -143,31 +151,31 @@
                 </div>
             </div>
             <nav class="flex-1 flex flex-col gap-1 overflow-y-auto">
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('dashboard') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('dashboard') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('dashboard') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('dashboard') }}">
                     <i data-lucide="layout-dashboard"></i>
                     <span class="font-label-md text-label-md">Dashboard</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('pelanggan.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('pelanggan.index') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('pelanggan.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('pelanggan.index') }}">
                     <i data-lucide="users"></i>
                     <span class="font-label-md text-label-md">Pelanggan</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('produk.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('produk.index') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('produk.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('produk.index') }}">
                     <i data-lucide="package"></i>
                     <span class="font-label-md text-label-md">Produk</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('transaksi.index') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('transaksi.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('transaksi.index') }}">
                     <i data-lucide="receipt"></i>
                     <span class="font-label-md text-label-md">Transaksi</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('pengeluaran.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('pengeluaran.index') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('pengeluaran.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('pengeluaran.index') }}">
                     <i data-lucide="wallet"></i>
                     <span class="font-label-md text-label-md">Pengeluaran</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('jadwal-rutin.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('jadwal-rutin.index') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('jadwal-rutin.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('jadwal-rutin.index') }}">
                     <i data-lucide="calendar"></i>
                     <span class="font-label-md text-label-md">Jadwal Rutin</span>
                 </a>
-                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('laporan.*') ? 'bg-surface-container-highest text-primary' : 'text-on-surface-variant' }}" href="{{ route('laporan.index') }}">
+                <a class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('laporan.*') ? 'border-l-4 border-blue-600 text-blue-600 font-semibold bg-blue-50' : 'text-gray-600' }}" href="{{ route('laporan.index') }}">
                     <i data-lucide="bar-chart-3"></i>
                     <span class="font-label-md text-label-md">Laporan</span>
                 </a>
@@ -310,7 +318,7 @@
         </header>
 
         <!-- Main Canvas -->
-        <main class="flex-1 p-margin-tablet md:p-margin-desktop flex flex-col gap-gutter">
+        <main class="flex-1 p-margin-tablet md:p-margin-desktop flex flex-col gap-gutter bg-slate-50">
             <!-- Flash Messages -->
             @if(session('success'))
                 <div class="bg-secondary-container/20 border border-secondary text-on-secondary-container p-4 rounded-xl flex justify-between items-center">

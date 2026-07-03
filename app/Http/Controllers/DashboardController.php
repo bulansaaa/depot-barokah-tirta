@@ -28,6 +28,15 @@ class DashboardController extends Controller
             ->where('status_transaksi', 'selesai')
             ->sum('total_harga');
 
+        // Statistik bulan lalu
+        $startBulanLalu = Carbon::now()->subMonth()->startOfMonth();
+        $endBulanLalu = Carbon::now()->subMonth()->endOfMonth();
+        $pendapatanBulanLalu = Transaksi::whereBetween('tanggal_transaksi', [$startBulanLalu, $endBulanLalu])
+            ->where('status_transaksi', 'selesai')
+            ->sum('total_harga');
+        $pengeluaranBulanLalu = Pengeluaran::whereBetween('tanggal', [$startBulanLalu, $endBulanLalu])->sum('nominal');
+        $labaBulanLalu = $pendapatanBulanLalu - $pengeluaranBulanLalu;
+
         // Pengeluaran
         $pengeluaranHariIni = Pengeluaran::whereDate('tanggal', today())->sum('nominal');
         $pengeluaranBulanIni = Pengeluaran::bulanIni()->sum('nominal');
@@ -75,10 +84,13 @@ class DashboardController extends Controller
             'pendapatanHariIni',
             'transaksibulanIni',
             'pendapatanBulanIni',
+            'pendapatanBulanLalu',
             'pengeluaranHariIni',
             'pengeluaranBulanIni',
+            'pengeluaranBulanLalu',
             'labaHariIni',
             'labaBulanIni',
+            'labaBulanLalu',
             'transaksiPending',
             'transaksiDiproses',
             'jadwalHariIni',

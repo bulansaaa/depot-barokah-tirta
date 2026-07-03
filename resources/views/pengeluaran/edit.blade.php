@@ -57,12 +57,13 @@
 
             <!-- Nominal -->
             <div>
-                <label for="nominal" class="block font-label-md text-label-md text-on-surface mb-2">Nominal (Rp) <span class="text-error">*</span></label>
+                <label for="nominalDisplay" class="block font-label-md text-label-md text-on-surface mb-2">Nominal (Rp) <span class="text-error">*</span></label>
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-medium">Rp</span>
-                    <input type="number" name="nominal" id="nominal" value="{{ old('nominal', (int)$pengeluaran->nominal) }}" 
+                    <input type="text" id="nominalDisplay" 
                            class="w-full pl-12 pr-4 py-2 bg-surface rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none font-body-md text-body-md text-on-surface @error('nominal') border-error @enderror" 
                            placeholder="0" required>
+                    <input type="hidden" name="nominal" id="nominal" value="{{ old('nominal', (int)$pengeluaran->nominal) }}">
                 </div>
                 @error('nominal')
                     <p class="text-error text-xs mt-1">{{ $message }}</p>
@@ -100,4 +101,43 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Format currency input
+    const nominalDisplay = document.getElementById('nominalDisplay');
+    const nominalInput = document.getElementById('nominal');
+
+    function formatCurrency(value) {
+        // Remove non-digit characters
+        const numbers = value.replace(/\D/g, '');
+        // Format with thousand separator
+        return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function unformatCurrency(value) {
+        return value.replace(/\D/g, '');
+    }
+
+    nominalDisplay.addEventListener('input', function() {
+        this.value = formatCurrency(this.value);
+        nominalInput.value = unformatCurrency(this.value);
+    });
+
+    nominalDisplay.addEventListener('keypress', function(e) {
+        // Only allow digits
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    });
+
+    // Set initial display value if editing
+    if (nominalInput.value) {
+        nominalDisplay.value = formatCurrency(nominalInput.value);
+    }
+
+    // Before submit, ensure nominal value is clean
+    document.querySelector('form').addEventListener('submit', function() {
+        nominalInput.value = unformatCurrency(nominalDisplay.value);
+    });
+</script>
 @endsection

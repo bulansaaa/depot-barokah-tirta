@@ -56,7 +56,7 @@ class TransaksiController extends Controller
         $request->validate([
             'pelanggan_id'      => 'nullable|exists:pelanggan,id',
             'tipe_transaksi'    => 'required|in:langsung,antar',
-            'metode_pemesanan'  => 'required|in:langsung,whatsapp,telepon',
+
             'alamat_pengiriman' => 'required_if:tipe_transaksi,antar|nullable|string',
             'no_hp_pengiriman'  => 'required_if:tipe_transaksi,antar|nullable|string|max:20',
             'tanggal_transaksi' => 'required|date|before_or_equal:today',
@@ -101,7 +101,7 @@ class TransaksiController extends Controller
                 'pelanggan_id'      => $request->pelanggan_id,
                 'user_id'           => auth()->id(),
                 'tipe_transaksi'    => $request->tipe_transaksi,
-                'metode_pemesanan'  => $request->metode_pemesanan,
+                'metode_pemesanan'  => 'langsung',
                 'alamat_pengiriman' => $request->alamat_pengiriman,
                 'no_hp_pengiriman'  => $request->no_hp_pengiriman,
                 'status_transaksi'  => $status,

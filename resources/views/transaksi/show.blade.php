@@ -10,11 +10,11 @@
     <div class="flex gap-2">
         <a href="{{ route('transaksi.nota', $transaksi) }}"
            class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
-            🖨️ Cetak Nota
+            Cetak Nota
         </a>
         <a href="{{ route('laporan.nota.pdf', $transaksi) }}"
            class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-700">
-            📄 Download PDF
+            Download PDF
         </a>
     </div>
 </div>
@@ -26,7 +26,7 @@
 
         {{-- Info Transaksi --}}
         <div class="bg-white rounded-xl shadow p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">📋 Informasi Transaksi</h3>
+            <h3 class="font-semibold text-gray-700 mb-4">Informasi Transaksi</h3>
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
                     <p class="text-gray-400">Kode Transaksi</p>
@@ -68,7 +68,7 @@
         {{-- Detail Produk --}}
         <div class="bg-white rounded-xl shadow overflow-hidden">
             <div class="p-5 border-b">
-                <h3 class="font-semibold text-gray-700">🫙 Detail Produk</h3>
+                <h3 class="font-semibold text-gray-700">Detail Produk</h3>
             </div>
             <table class="w-full text-sm">
                 <thead class="bg-gray-50">
@@ -107,7 +107,7 @@
     {{-- Sidebar Status --}}
     <div class="space-y-4">
         <div class="bg-white rounded-xl shadow p-6">
-            <h3 class="font-semibold text-gray-700 mb-4">⚡ Update Status</h3>
+            <h3 class="font-semibold text-gray-700 mb-4">Update Status</h3>
 
             <div class="mb-4">
                 <p class="text-xs text-gray-400 mb-2">Status Saat Ini</p>
@@ -179,31 +179,7 @@
             @endif
         </div>
 
-        {{-- Alamat Pengiriman (jika antar) --}}
-        @if($transaksi->tipe_transaksi !== 'langsung')
-        <div class="bg-white rounded-xl shadow p-6">
-            <h3 class="font-semibold text-gray-700 mb-3">📍 Informasi Pengiriman</h3>
-            <div class="space-y-3 text-sm">
-                <div>
-                    <p class="text-xs text-gray-400">No HP Penerima</p>
-                    <p class="font-medium text-gray-800">{{ $transaksi->no_hp_pengiriman ?? '-' }}</p>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-400">Alamat Lengkap</p>
-                    <p class="text-gray-700 leading-relaxed">{{ $transaksi->alamat_pengiriman ?? '-' }}</p>
-                </div>
-                
-                @php $waNumber = $transaksi->no_hp_pengiriman ?: ($transaksi->pelanggan->no_hp ?? ''); @endphp
-                @if($waNumber)
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', (str_starts_with($waNumber, '0') ? '62' . substr($waNumber, 1) : $waNumber)) }}"
-                   target="_blank"
-                   class="block w-full text-center bg-green-500 text-white py-2 rounded-lg text-sm hover:bg-green-600 transition">
-                    📱 WhatsApp Penerima
-                </a>
-                @endif
-            </div>
-        </div>
-        @endif
+
     </div>
 
 </div>

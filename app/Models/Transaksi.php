@@ -64,11 +64,12 @@ class Transaksi extends Model
 
         $last = self::where('kode_transaksi', 'like', $pattern)
             ->orderByDesc('kode_transaksi')
+            ->lockForUpdate()
             ->first();
 
         if ($last) {
-            // Format: TRX-22-06-26-001, extract nomor urut dari posisi 12 (setelah "TRX-22-06-26-")
-            $lastNumber = (int) substr($last->kode_transaksi, 12, 3);
+            // Format: TRX-22-06-26-001, extract nomor urut dari posisi 13 (setelah "TRX-22-06-26-")
+            $lastNumber = (int) substr($last->kode_transaksi, strlen($prefix) + 1, 3);
             $newNumber  = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
         } else {
             $newNumber = '001';
